@@ -17,6 +17,8 @@ import Settings from './pages/Settings'
 
 import FourOhFour from './404.jsx'
 
+import ServerSettings from './pages/server/Server-Settings'
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
@@ -30,6 +32,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Route path="/recover-cancel" element={<RecoverCancel />} />
       <Route path="/recover-confirm" element={<RecoverConfirm />} />
       <Route path="/password-enter" element={<PasswordEnter />} />
+
+      <Route path="/server-settings" element={<ServerSettings />} />
 
       <Route path="*" element={<FourOhFour />} />
     </Routes>

@@ -3,8 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import validator from "validator";
-import { BiSend } from "react-icons/bi";
-import { BiUser } from "react-icons/bi";
+import { BiSend, BiUser, BiGridVertical } from "react-icons/bi";
 
 import checkLoggedIn from "../../functions/check-logged-in";
 
@@ -23,8 +22,10 @@ function App() {
   const [success, setSuccess] = useState("");
 
   const [addFriendUsername, setAddFriendUsername] = useState("");
+  const [newServerName, setNewServerName] = useState("");
 
   const [friendsList, setFriendsList] = useState([]);
+  const [serversList, setServersList] = useState([]);
 
   const [messages, setMessages] = useState([]);
 
@@ -32,9 +33,16 @@ function App() {
 
   const [newMessage, setNewMessage] = useState("");
 
+  const [serverName, setServerName] = useState("");
+
   const [channelID, setChannelID] = useState("");
+  const [serverID, setServerID] = useState("");
 
   const [directMessage, setDirectMessage] = useState(false);
+  const [server, setServer] = useState(false);
+
+  const [serverChannels, setServerChannels] = useState([]);
+
   const [otherUserID, setOtherUserID] = useState("");
 
   const [userData, setUserData] = useState([]);
@@ -52,6 +60,7 @@ function App() {
   useEffect(() => {
     checkLoggedIn();
     getFriendsList();
+    getServersList();
   }, []);
 
   async function scrollToBottom() {
@@ -99,10 +108,62 @@ function App() {
     });
   }
 
+  async function createServer() {
+    if (validator.isEmpty(newServerName) === true) {
+      setError("Name can not be empty");
+      return;
+    }
+
+    if (validator.isAlphanumeric(newServerName) === false) {
+      setError("Name is not valid");
+      return;
+    }
+
+    let key = generateString(50);
+
+    const json = { name: newServerName };
+    await axios.post("/api/servers/create-server", json).then((response) => {
+      if (response.data.success) {
+        setNewServerName("");
+        setError(null);
+        addToKeychain(Cookies.get("username"), key, response.data.id);
+        setSuccess("Created server " + newServerName);
+        getServersList();
+      } else {
+        setNewServerName("");
+        setError(response.data.error);
+        console.log(response);
+      }
+    });
+  }
+
   async function getFriendsList() {
     await axios.post("/api/friends/get").then((response) => {
       if (!response.data.error) {
         setFriendsList(response.data);
+      } else {
+        setError(response.data.error);
+        console.log(response);
+      }
+    });
+  }
+
+  async function getServersList() {
+    await axios.post("/api/servers/get").then((response) => {
+      if (!response.data.error) {
+        setServersList(response.data);
+      } else {
+        setError(response.data.error);
+        console.log(response);
+      }
+    });
+  }
+
+  async function getChannels(id) {
+    const json = { server_id: id };
+    await axios.post("/api/servers/get-channels", json).then((response) => {
+      if (!response.data.error) {
+        setServerChannels(response.data);
       } else {
         setError(response.data.error);
         console.log(response);
@@ -144,32 +205,14 @@ function App() {
     });
   }
 
-  async function blockFriend(user_id) {
-    const json = { user_id: user_id, channel_id: channelID };
-
-    await axios.post("/api/friends/block-friend", json).then((response) => {
-      if (!response.data.error) {
-        setSuccess("Blocked friend");
-        setChannelID(null);
-        setChatName("");
-        setDirectMessage(false);
-        setMessages([]);
-        getFriendsList();
-      } else {
-        setError(response.data.error);
-        console.log(response);
-      }
-    });
-  }
-
-  async function loadMessages(channel_id) {
+  async function loadMessages(channel_id, keychain_id) {
     socketDisconnect();
 
     const json = { channel_id: channel_id };
 
     window.sessionStorage.setItem(
       "current_key",
-      await getPrivateKey(channel_id)
+      await getPrivateKey(keychain_id)
     );
 
     await axios.post("/api/messages/get?limit=50", json).then((response) => {
@@ -304,8 +347,10 @@ function App() {
                       <button
                         onClick={() => {
                           setMessages([]);
-                          setChannelID(null), setDirectMessage(true);
-                          loadMessages(col.channel_id),
+                          setChannelID(null),
+                            setDirectMessage(true),
+                            setServer(false);
+                          loadMessages(col.channel_id, col.channel_id),
                             setChatName(col.username),
                             setOtherUserID(col.id);
                         }}
@@ -317,7 +362,7 @@ function App() {
                 ))}
               </ul>
             </div>
-            {/*
+
             <div className="dropdown dropdown-start">
               <label
                 tabIndex={0}
@@ -329,15 +374,66 @@ function App() {
                 tabIndex={0}
                 className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-64 mt-4 border border-secondary"
               >
-                <li>
-                  <a>Item 1</a>
-                </li>
-                <li>
-                  <a>Item 2</a>
-                </li>
+                {!server ? (
+                  <>
+                    <button
+                      className="btn capitalize"
+                      onClick={() => window.new_server_modal.showModal()}
+                    >
+                      Create server
+                    </button>
+                    {serversList.map((col) => (
+                      <>
+                        <li className="cursor-pointer m-1">
+                          <button
+                            onClick={() => {
+                              setMessages([]);
+                              setChannelID(null),
+                                setDirectMessage(false),
+                                setServer(true);
+                              setServerName(col.name);
+                              getChannels(col.id);
+                              setServerID(col.id);
+                            }}
+                          >
+                            {col.name}
+                          </button>
+                        </li>
+                      </>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className="btn capitalize"
+                      onClick={() => {
+                        setServer(false), setMessages([]), setChannelID(null);
+                      }}
+                    >
+                      Back
+                    </button>
+                    {serverChannels.map((col) => (
+                      <>
+                        <li className="cursor-pointer m-1">
+                          <button
+                            onClick={() => {
+                              setMessages([]);
+                              setChannelID(null),
+                                setDirectMessage(false),
+                                setServer(true);
+                              loadMessages(col.channel_id, serverID),
+                                setChatName("#" + col.name);
+                            }}
+                          >
+                            #{col.name}
+                          </button>
+                        </li>
+                      </>
+                    ))}
+                  </>
+                )}
               </ul>
             </div>
-                      */}
           </div>
         </div>
 
@@ -376,6 +472,48 @@ function App() {
           </div>
         )}
 
+        {server && (
+          <div className="dropdown dropdown-end mr-2">
+            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+              <div>
+                <BiGridVertical />
+              </div>
+            </label>
+            <ul
+              tabIndex={0}
+              className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-36 mt-4 border border-secondary"
+            >
+              <li className="cursor-pointer m-1">
+                <button
+                  onClick={() => {
+                    window.location.href = "/server-settings?id=" + serverID;
+                  }}
+                >
+                  Settings
+                </button>
+              </li>
+              <li className="cursor-pointer m-1">
+                <button
+                  onClick={() => {
+                    window.invite_to_server_modal.showModal();
+                  }}
+                >
+                  Invite
+                </button>
+              </li>
+              <li className="cursor-pointer m-1">
+                <button
+                  onClick={() => {
+                    removeFriend(channelID);
+                  }}
+                >
+                  Leave
+                </button>
+              </li>
+            </ul>
+          </div>
+        )}
+
         <div className="dropdown dropdown-end">
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <div className="w-10 rounded-full">
@@ -398,7 +536,7 @@ function App() {
         className="modal modal-bottom sm:modal-middle"
       >
         <form method="dialog" className="modal-box border border-secondary">
-          <h3 className="font-bold text-lg">Add Friend</h3>
+          <h3 className="font-bold text-lg text-white">Add Friend</h3>
           <div className="form-control w-full max-w-xs mt-5">
             <label className="label">
               <span className="label-text">Enter your friends username</span>
@@ -406,7 +544,7 @@ function App() {
             <input
               type="username"
               placeholder="cool_eglo_computer_753"
-              className="input input-bordered input-secondary w-full max-w-full"
+              className="input input-bordered input-secondary w-full max-w-full text-white"
               value={addFriendUsername}
               onChange={(e) => setAddFriendUsername(e.target.value)}
             />
@@ -417,6 +555,76 @@ function App() {
               onClick={() => addFriend()}
             >
               Add
+            </button>
+            <button className="btn capitalize">Cancel</button>
+          </div>
+        </form>
+      </dialog>
+
+      <dialog
+        id="invite_to_server_modal"
+        className="modal modal-bottom sm:modal-middle"
+      >
+        <form method="dialog" className="modal-box border border-secondary">
+          <h3 className="font-bold text-lg text-white">Invite To Server</h3>
+          <div className="form-control w-full max-w-xs mt-5">
+            <label className="label">
+              <span className="label-text">Server code</span>
+            </label>
+            <input
+              type="text"
+              className="input input-bordered input-secondary w-full max-w-full text-white"
+              value={
+                "https://app.eglo.pw/server-invite?id=" +
+                serverID +
+                "#KEY_REDACTED_FOR_SECURITY"
+              }
+              disabled
+            />
+          </div>
+          <div className="modal-action">
+            <button
+              className="btn btn-primary capitalize"
+              onClick={() =>
+                navigator.clipboard.writeText(
+                  "https://app.eglo.pw/server-invite?id=" +
+                    serverID +
+                    "#" +
+                    window.sessionStorage.getItem("current_key")
+                )
+              }
+            >
+              Copy
+            </button>
+            <button className="btn capitalize">Cancel</button>
+          </div>
+        </form>
+      </dialog>
+
+      <dialog
+        id="new_server_modal"
+        className="modal modal-bottom sm:modal-middle"
+      >
+        <form method="dialog" className="modal-box border border-secondary">
+          <h3 className="font-bold text-lg text-white">Create Server</h3>
+          <div className="form-control w-full max-w-xs mt-5">
+            <label className="label">
+              <span className="label-text">Server name</span>
+            </label>
+            <input
+              type="username"
+              placeholder="cool_cat_hangout"
+              className="input input-bordered input-secondary w-full max-w-full text-white"
+              value={newServerName}
+              onChange={(e) => setNewServerName(e.target.value)}
+            />
+          </div>
+          <div className="modal-action">
+            <button
+              className="btn btn-primary capitalize"
+              onClick={() => createServer()}
+            >
+              Create
             </button>
             <button className="btn capitalize">Cancel</button>
           </div>
@@ -574,6 +782,14 @@ function App() {
           </>
         ))}
       </div>
+
+      {server && !channelID  && !chatName && (
+        <>
+          <p className="text-center mt-96">
+            Select a channel for <b>{serverName}</b>
+          </p>
+        </>
+      )}
 
       <div className="mt-20" />
 
