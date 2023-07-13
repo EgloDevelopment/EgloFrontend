@@ -21,6 +21,9 @@ function App() {
 
   const [allowFriendRequests, setAllowFriendRequests] = useState(true);
 
+  const [currentRecoveryEmail, setCurrentRecoveryEmail] = useState("")
+  const [newRecoveryEmail, setNewRecoveryEmail] = useState("")
+
   useEffect(() => {
     checkLoggedIn();
     getUserSettings();
@@ -31,6 +34,7 @@ function App() {
       if (!response.data.error) {
         setAllowFriendRequests(response.data.accepting_friend_requests);
         setAboutMe(response.data.about_me)
+        setCurrentRecoveryEmail(response.data.recovery_email)
       } else {
         setError(response.data.error);
         console.log(response);
@@ -82,6 +86,21 @@ function App() {
     await axios.post("/api/settings/change-password", json).then((response) => {
       if (response.data.success) {
         window.location.href = "/password-enter";
+      } else {
+        setError(response.data.error);
+        console.log(response);
+      }
+    });
+  }
+
+  async function changeRecoveryEmail() {
+    const json = {
+      new_email: newRecoveryEmail,
+    };
+
+    await axios.post("/api/settings/change-recovery-email", json).then((response) => {
+      if (response.data.success) {
+        setSuccess("Changed recovery email")
       } else {
         setError(response.data.error);
         console.log(response);
@@ -168,6 +187,24 @@ function App() {
         </div>
 
         <div className="form-control w-full max-w-xs mt-24 mb-24">
+          <p className="text-lg mb-3">Recovery email</p>
+          <hr className="mb-5" />
+          <input
+            type="email"
+            placeholder={currentRecoveryEmail}
+            className="input input-bordered input-secondary w-full max-w-xs "
+            value={newRecoveryEmail}
+            onChange={(e) => setNewRecoveryEmail(e.target.value)}
+          />
+          <button
+            className="capitalize mt-5 btn btn-outline"
+            onClick={() => changeRecoveryEmail()}
+          >
+            Change  recovery email
+          </button>
+        </div>
+
+        <div className="form-control w-full max-w-xs mt-24 mb-24">
           <p className="text-lg mb-3">Change password</p>
           <hr className="mb-5" />
           <input
@@ -204,6 +241,7 @@ function App() {
           </button>
         </div>
       </div>
+      
 
       <div
         className="toast toast-bottom toast-end z-50"

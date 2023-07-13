@@ -42,6 +42,7 @@ function App() {
   const [server, setServer] = useState(false);
 
   const [serverChannels, setServerChannels] = useState([]);
+  const [serverOwner, setServerOwner] = useState("");
 
   const [otherUserID, setOtherUserID] = useState("");
 
@@ -196,6 +197,24 @@ function App() {
         setChannelID(null);
         setChatName("");
         setDirectMessage(false);
+        setMessages([]);
+        getFriendsList();
+      } else {
+        setError(response.data.error);
+        console.log(response);
+      }
+    });
+  }
+
+  async function leaveServer() {
+    const json = { server_id: serverID };
+
+    await axios.post("/api/servers/leave", json).then((response) => {
+      if (!response.data.error) {
+        setSuccess("Left server");
+        setChannelID(null);
+        setChatName("");
+        setServer(false);
         setMessages([]);
         getFriendsList();
       } else {
@@ -394,6 +413,7 @@ function App() {
                               setServerName(col.name);
                               getChannels(col.id);
                               setServerID(col.id);
+                              setServerOwner(col.server_owner);
                             }}
                           >
                             {col.name}
@@ -483,15 +503,20 @@ function App() {
               tabIndex={0}
               className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-36 mt-4 border border-secondary"
             >
-              <li className="cursor-pointer m-1">
-                <button
-                  onClick={() => {
-                    window.location.href = "/server-settings?id=" + serverID;
-                  }}
-                >
-                  Settings
-                </button>
-              </li>
+              {serverOwner === Cookies.get("id") && (
+                <>
+                  <li className="cursor-pointer m-1">
+                    <button
+                      onClick={() => {
+                        window.location.href =
+                          "/server-settings?id=" + serverID;
+                      }}
+                    >
+                      Settings
+                    </button>
+                  </li>
+                </>
+              )}
               <li className="cursor-pointer m-1">
                 <button
                   onClick={() => {
@@ -501,15 +526,17 @@ function App() {
                   Invite
                 </button>
               </li>
-              <li className="cursor-pointer m-1">
-                <button
-                  onClick={() => {
-                    removeFriend(channelID);
-                  }}
-                >
-                  Leave
-                </button>
-              </li>
+              {serverOwner !== Cookies.get("id") && (
+                <li className="cursor-pointer m-1">
+                  <button
+                    onClick={() => {
+                      leaveServer();
+                    }}
+                  >
+                    Leave
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
         )}
@@ -783,7 +810,7 @@ function App() {
         ))}
       </div>
 
-      {server && !channelID  && !chatName && (
+      {server && !channelID && (
         <>
           <p className="text-center mt-96">
             Select a channel for <b>{serverName}</b>

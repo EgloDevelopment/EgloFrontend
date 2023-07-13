@@ -30,6 +30,8 @@ function App() {
 
   const [allowNewUsers, setAllowNewUsers] = useState(true);
 
+  const [deleteServerConfirm, setDeleteServerConfirm] = useState("");
+
   useEffect(() => {
     if (server_id) {
       checkLoggedIn();
@@ -72,15 +74,14 @@ function App() {
 
   async function createChannel() {
     if (validator.isEmpty(newChannelName) === true) {
-      setError("Channel name can not be empty")
-      return
+      setError("Channel name can not be empty");
+      return;
     }
 
     if (validator.isAlphanumeric(newChannelName) === false) {
-      setError("Channel name is invalid")
-      return
+      setError("Channel name is invalid");
+      return;
     }
-
 
     const json = { server_id: serverID, channel_name: newChannelName };
 
@@ -111,15 +112,14 @@ function App() {
 
   async function changeServerName() {
     if (validator.isEmpty(newServerName) === true) {
-      setError("Server name can not be empty")
+      setError("Server name can not be empty");
       return;
     }
 
     if (validator.isAlphanumeric(newServerName) === false) {
-      setError("Server name is invalid")
+      setError("Server name is invalid");
       return;
     }
-
 
     const json = { server_id: serverID, name: newServerName };
 
@@ -133,17 +133,34 @@ function App() {
     });
   }
 
+  async function deleteServer() {
+    if (deleteServerConfirm !== serverName) {
+      setError("Server names do not match");
+      return;
+    }
+
+    const json = { server_id: serverID };
+
+    await axios.post("/api/servers/delete-server", json).then((response) => {
+      if (!response.data.error) {
+        window.history.back();
+      } else {
+        setError(response.data.error);
+        console.log(response);
+      }
+    });
+  }
+
   async function modifyChannel(channel_id) {
     if (validator.isEmpty(channelName) === true) {
-      setError("Channel name can not be empty")
+      setError("Channel name can not be empty");
       return;
     }
 
     if (validator.isAlphanumeric(channelName) === false) {
-      setError("Channel name is invalid")
+      setError("Channel name is invalid");
       return;
     }
-
 
     const json = {
       server_id: serverID,
@@ -179,39 +196,10 @@ function App() {
         </div>
       </div>
 
-      <dialog
-        id="new_channel_modal"
-        className="modal modal-bottom sm:modal-middle"
-      >
-        <form method="dialog" className="modal-box border border-secondary">
-          <h3 className="font-bold text-lg text-white">Create channel</h3>
-          <div className="form-control w-full max-w-xs mt-5">
-            <label className="label">
-              <span className="label-text">Channel name</span>
-            </label>
-            <input
-              type="username"
-              placeholder="#weird-eglo-channel"
-              className="input input-bordered input-secondary w-full max-w-full text-white"
-              value={newChannelName}
-              onChange={(e) => setNewChannelName(e.target.value)}
-            />
-          </div>
-          <div className="modal-action">
-            <button
-              className="btn btn-primary capitalize"
-              onClick={() => createChannel()}
-            >
-              Create
-            </button>
-            <button className="btn capitalize">Cancel</button>
-          </div>
-        </form>
-      </dialog>
-
       <div className="mt-24 ml-5">
         <p className="text-4xl bold mt-5">{serverName}</p>
         <p className="text-sm mt-2 text-zinc-500">{serverID}</p>
+        
 
         <div className="form-control w-full max-w-xs mt-24 mb-24">
           <p className="text-lg mb-3">Change server name</p>
@@ -298,7 +286,7 @@ function App() {
               <>
                 <div className="mt-5">
                   <button
-                    className="capitalize w-full btn btn-outline"
+                    className="capitalize w-full btn "
                     onClick={() => removeUser(col.id, col.username)}
                   >
                     {col.username}
@@ -307,15 +295,75 @@ function App() {
               </>
             ))}
         </div>
+
+        <dialog
+          id="delete_server_modal"
+          className="modal modal-bottom sm:modal-middle"
+        >
+          <form method="dialog" className="modal-box border border-secondary">
+            <h3 className="font-bold text-lg text-white">Are you sure?</h3>
+            <div className="form-control w-full max-w-xs mt-5">
+              <label className="label">
+                <span className="label-text">Enter server name to confirm</span>
+              </label>
+              <input
+                type="username"
+                placeholder={serverName}
+                className="input input-bordered input-secondary w-full max-w-full text-white"
+                value={deleteServerConfirm}
+                onChange={(e) => setDeleteServerConfirm(e.target.value)}
+              />
+            </div>
+            <div className="modal-action">
+              <button
+                className="btn btn-error btn-outline capitalize"
+                onClick={() => deleteServer()}
+              >
+                Delete
+              </button>
+              <button className="btn capitalize">Cancel</button>
+            </div>
+          </form>
+        </dialog>
+
+        <dialog
+          id="new_channel_modal"
+          className="modal modal-bottom sm:modal-middle"
+        >
+          <form method="dialog" className="modal-box border border-secondary">
+            <h3 className="font-bold text-lg text-white">Create channel</h3>
+            <div className="form-control w-full max-w-xs mt-5">
+              <label className="label">
+                <span className="label-text">Channel name</span>
+              </label>
+              <input
+                type="username"
+                placeholder="#weird-eglo-channel"
+                className="input input-bordered input-secondary w-full max-w-full text-white"
+                value={newChannelName}
+                onChange={(e) => setNewChannelName(e.target.value)}
+              />
+            </div>
+            <div className="modal-action">
+              <button
+                className="btn btn-primary capitalize"
+                onClick={() => createChannel()}
+              >
+                Create
+              </button>
+              <button className="btn capitalize">Cancel</button>
+            </div>
+          </form>
+        </dialog>
       </div>
 
       <div className="w-full p-10">
-      <button
-        className="capitalize w-full btn btn-error btn-outline mt-56"
-        onClick={() => removeUser(col.id, col.username)}
-      >
-        DELETE SERVER (no-op)
-      </button>
+        <button
+          className="capitalize w-full btn btn-error btn-outline mt-56"
+          onClick={() => window.delete_server_modal.showModal()}
+        >
+          DELETE SERVER
+        </button>
       </div>
 
       <div
