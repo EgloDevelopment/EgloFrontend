@@ -45,14 +45,32 @@ function App() {
     });
   }
 
+  async function logout() {
+    await axios.post("/api/auth/logout").then((response) => {
+      if (!response.data.error) {
+        Cookies.remove("token");
+        Cookies.remove("username");
+        Cookies.remove("id");
+        window.sessionStorage.removeItem("private_key")
+        window.location.href = "/";
+      } else {
+        setError(response.data.error);
+      }
+    });
+  }
+
   return (
     <>
       <div className="flex flex-col min-h-screen justify-center items-center">
         <div className="avatar">
           <div className="w-14 rounded-full">
-            <img src={"https://api.dicebear.com/6.x/initials/svg?seed=" +
-                  Cookies.get("username") +
-                  "&backgroundType=gradientLinear"} />
+            <img
+              src={
+                "https://api.dicebear.com/6.x/initials/svg?seed=" +
+                Cookies.get("username") +
+                "&backgroundType=gradientLinear"
+              }
+            />
           </div>
         </div>
 
@@ -77,6 +95,14 @@ function App() {
           >
             login
           </button>
+          <div className="form-control w-full max-w-xs mt-4">
+            <button
+              className="capitalize btn btn-ghost w-full"
+              onClick={() => logout()}
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </div>
 

@@ -8,48 +8,51 @@ import generateKeys from "../../../functions/generate-keys";
 function App() {
   const [error, setError] = useState(false);
 
-  const [username, setUsername] = useState("")
-  const [password1, setPassword1] = useState("")
-  const [password2, setPassword2] = useState("")
+  const [username, setUsername] = useState("");
+  const [password1, setPassword1] = useState("");
+  const [password2, setPassword2] = useState("");
 
   async function register() {
     if (validator.isEmpty(username) === true) {
-      setError("Username can not be empty")
-      return
+      setError("Username can not be empty");
+      return;
     }
 
     if (username.length > 20) {
-      setError("Username must be below 20 characters")
-      return
+      setError("Username must be below 20 characters");
+      return;
     }
 
     if (validator.isAlphanumeric(username) === false) {
-      setError("Username can be only letters or numbers")
-      return
+      setError("Username can be only letters or numbers");
+      return;
     }
 
     if (validator.isEmpty(username) === true) {
-      setError("Username can not be empty")
-      return
+      setError("Username can not be empty");
+      return;
     }
 
-    if (validator.isEmpty(password1) === true || validator.isEmpty(password2) === true) {
-      setError("Password can not be empty")
-      return
+    if (
+      validator.isEmpty(password1) === true ||
+      validator.isEmpty(password2) === true
+    ) {
+      setError("Password can not be empty");
+      return;
     }
 
     if (password1 !== password2) {
-      setError("Passwords must match")
-      return
+      setError("Passwords must match");
+      return;
     }
 
     if (validator.isStrongPassword(password1) === false) {
-      setError("Password does not meet the requirements")
-      return
+      setError("Password does not meet the requirements");
+      return;
     }
 
-    setError(null)
-    
+    setError(null);
+
     let { publicKey, privateKey } = await generateKeys(password1);
 
     const json = {
@@ -62,9 +65,9 @@ function App() {
 
     await axios.post("/api/auth/register", json).then((response) => {
       if (response.data.success) {
-        window.location.href = "/login"
+        window.location.href = "/login";
       } else {
-        setError(response.data.error)
+        setError(response.data.error);
       }
     });
   }
@@ -75,6 +78,7 @@ function App() {
         <div className="form-control w-full max-w-xs mt-8">
           <label className="label">
             <span className="label-text">What username do you want?</span>
+            <span className="label-text-alt">{username.length}/20</span>
           </label>
           <input
             type="username"
@@ -97,7 +101,9 @@ function App() {
             onChange={(e) => setPassword1(e.target.value)}
           />
           <label className="label">
-            <span className="label-text-alt">8+ Characters, Symbols & Numbers with Capitals</span>
+            <span className="label-text-alt">
+              8+ Characters, Symbols & Numbers with Capitals
+            </span>
           </label>
         </div>
 
@@ -115,7 +121,12 @@ function App() {
         </div>
 
         <div className="form-control w-full max-w-xs mt-9">
-          <button className="capitalize btn btn-outline w-full" onClick={() => register()}>register</button>
+          <button
+            className="capitalize btn btn-outline w-full"
+            onClick={() => register()}
+          >
+            register
+          </button>
         </div>
 
         <div className="form-control w-full max-w-xs mt-4">
@@ -124,7 +135,9 @@ function App() {
           </a>
         </div>
 
-        <p className="absolute top-0 text-xs mt-1">By registering you agree to the Terms of Service</p>
+        <p className="absolute top-0 text-xs mt-1">
+          By registering you agree to the Terms of Service
+        </p>
       </div>
 
       <div

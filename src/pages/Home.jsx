@@ -672,10 +672,27 @@ function App() {
                 className="tooltip tooltip-right -mt-5"
                 data-tip={userData.id}
               >
-                <h3 className="font-bold text-lg text-white">
-                  {userData.username}
-                </h3>
+                {userData.preferred_name ? (
+                  <>
+                    <h3 className="font-bold text-lg text-white">
+                      {userData.preferred_name}
+                    </h3>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="font-bold text-lg text-white">
+                      {userData.username}
+                    </h3>
+                  </>
+                )}
               </div>
+              {userData.preferred_name && (
+                <>
+                  <p className="text-md mt-1 text-zinc-500 text-white break-all max-w-full mb-4">
+                    {userData.username}
+                  </p>
+                </>
+              )}
               <p className="text-sm mt-1 text-zinc-500 text-white break-all max-w-full">
                 {userData.about_me}
               </p>

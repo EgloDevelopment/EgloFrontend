@@ -10,19 +10,22 @@ import checkLoggedIn from "../../functions/check-logged-in";
 import changeEncryptionKey from "../../functions/change-encryption-key";
 
 function App() {
-  const [success, setSuccess] = useState("")
+  const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword1, setNewPassword1] = useState("");
   const [newPassword2, setNewPassword2] = useState("");
 
-  const [aboutMe, setAboutMe] = useState("")
+  const [aboutMe, setAboutMe] = useState("");
+  const [preferredName, setPreferredName] = useState("")
 
   const [allowFriendRequests, setAllowFriendRequests] = useState(true);
 
-  const [currentRecoveryEmail, setCurrentRecoveryEmail] = useState("")
-  const [newRecoveryEmail, setNewRecoveryEmail] = useState("")
+  const [currentRecoveryEmail, setCurrentRecoveryEmail] = useState("");
+  const [newRecoveryEmail, setNewRecoveryEmail] = useState("");
+
+  const [deleteAccountConfirm, setDeleteAccountConfirm] = useState("")
 
   useEffect(() => {
     checkLoggedIn();
@@ -33,8 +36,9 @@ function App() {
     await axios.post("/api/settings/get").then((response) => {
       if (!response.data.error) {
         setAllowFriendRequests(response.data.accepting_friend_requests);
-        setAboutMe(response.data.about_me)
-        setCurrentRecoveryEmail(response.data.recovery_email)
+        setAboutMe(response.data.about_me);
+        setPreferredName(response.data.preferred_name)
+        setCurrentRecoveryEmail(response.data.recovery_email);
       } else {
         setError(response.data.error);
         console.log(response);
@@ -47,7 +51,7 @@ function App() {
 
     await axios.post("/api/settings/change-friend-request").then((response) => {
       if (!response.data.error) {
-        setSuccess("Updated friend request setting")
+        setSuccess("Updated friend request setting");
       } else {
         setError(response.data.error);
         console.log(response);
@@ -98,27 +102,50 @@ function App() {
       new_email: newRecoveryEmail,
     };
 
-    await axios.post("/api/settings/change-recovery-email", json).then((response) => {
-      if (response.data.success) {
-        setSuccess("Changed recovery email")
-      } else {
-        setError(response.data.error);
-        console.log(response);
-      }
-    });
+    await axios
+      .post("/api/settings/change-recovery-email", json)
+      .then((response) => {
+        if (response.data.success) {
+          setSuccess("Changed recovery email");
+        } else {
+          setError(response.data.error);
+          console.log(response);
+        }
+      });
+  }
+
+  async function deleteAccount() {
+
+    const json = {password: deleteAccountConfirm}
+
+    await axios
+      .post("/api/settings/delete-account", json)
+      .then((response) => {
+        if (response.data.success) {
+          window.location.href = "/login"
+        } else {
+          setError(response.data.error);
+          console.log(response);
+        }
+      });
   }
 
   async function changeAboutMe() {
-    const json = {about_me: aboutMe}
+    const json = { about_me: aboutMe, preferred_name: preferredName };
 
     if (aboutMe.length > 200) {
-      setError("About Me must be under 200 characters")
+      setError("About Me must be under 200 characters");
+      return;
+    }
+
+    if (preferredName.length > 20) {
+      setError("Preferred name must be under 20 characters");
       return;
     }
 
     await axios.post("/api/settings/change-about-me", json).then((response) => {
       if (!response.data.error) {
-        setSuccess("Updated About Me successfully")
+        setSuccess("Updated About Me successfully");
       } else {
         setError(response.data.error);
         console.log(response);
@@ -162,9 +189,20 @@ function App() {
         <div className="form-control mt-24 max-w-xs">
           <p className="text-lg mb-3">About me</p>
           <hr className="mb-5" />
-          <input className="input input-bordered input-secondary w-full max-w-xs" placeholder="Tell us about yourself" value={aboutMe}
-            onChange={(e) => setAboutMe(e.target.value)}></input>
-            <button
+          <input
+            className="input input-bordered input-secondary w-full max-w-xs"
+            placeholder="What is your preferred name?"
+            value={preferredName}
+            onChange={(e) => setPreferredName(e.target.value)}
+          ></input>
+
+          <input
+            className="input input-bordered input-secondary w-full max-w-xs mt-4"
+            placeholder="Tell us about yourself"
+            value={aboutMe}
+            onChange={(e) => setAboutMe(e.target.value)}
+          ></input>
+          <button
             className="capitalize mt-5 btn btn-outline"
             onClick={() => changeAboutMe()}
           >
@@ -200,7 +238,7 @@ function App() {
             className="capitalize mt-5 btn btn-outline"
             onClick={() => changeRecoveryEmail()}
           >
-            Change  recovery email
+            Change recovery email
           </button>
         </div>
 
@@ -241,11 +279,51 @@ function App() {
           </button>
         </div>
       </div>
-      
+
+      <dialog
+          id="delete_account_modal"
+          className="modal modal-bottom sm:modal-middle"
+        >
+          <form method="dialog" className="modal-box border border-secondary">
+            <h3 className="font-bold text-lg text-white">Are you sure?</h3>
+            <div className="form-control w-full max-w-xs mt-5">
+              <label className="label">
+                <span className="label-text">Enter your password to confirm</span>
+              </label>
+              <input
+                type="password"
+                placeholder="Enter your password"
+                className="input input-bordered input-secondary w-full max-w-full text-white"
+                value={deleteAccountConfirm}
+                onChange={(e) => setDeleteAccountConfirm(e.target.value)}
+              />
+            </div>
+            <div className="modal-action">
+              <button
+                className="btn btn-error btn-outline capitalize"
+                onClick={() => deleteAccount()}
+              >
+                Delete
+              </button>
+              <button className="btn capitalize">Cancel</button>
+            </div>
+          </form>
+        </dialog>
+
+      <div className="w-full p-10">
+        <button
+          className="capitalize w-full btn btn-error btn-outline mt-56"
+          onClick={() => window.delete_account_modal.showModal()}
+        >
+          DELETE ACCOUNT
+        </button>
+      </div>
 
       <div
         className="toast toast-bottom toast-end z-50"
-          onClick={() => {setSuccess(null), setError(null)}}
+        onClick={() => {
+          setSuccess(null), setError(null);
+        }}
       >
         {success && (
           <div className="alert alert-success hover:bg-green-900 cursor-pointer border-0">

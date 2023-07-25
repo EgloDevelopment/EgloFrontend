@@ -29,18 +29,6 @@ function App() {
 
   return (
     <>
-      <div className="toast toast-top toast-start">
-        {success && (
-          <div className="alert alert-success">
-            <span>{success}</span>
-          </div>
-        )}
-        {error && (
-          <div className="alert alert-error">
-            <span>{error}</span>
-          </div>
-        )}
-      </div>
 
       <div className="flex flex-col min-h-screen justify-center items-center">
         <div className="form-control w-full max-w-xs mt-8">
@@ -67,7 +55,7 @@ function App() {
 
         <div className="form-control w-full max-w-xs mt-4">
           <a href="/login" className="capitalize btn btn-ghost w-full">
-            back
+            Back
           </a>
         </div>
       </div>
