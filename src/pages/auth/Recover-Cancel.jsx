@@ -25,7 +25,7 @@ function App() {
 
   useEffect(() => {
     if (id && code) {
-      recoverConfirm()
+      recoverConfirm();
     }
   }, [id, code]);
 
@@ -35,17 +35,24 @@ function App() {
         Cancelling account deletion
       </div>
 
-      <div
-        className="toast toast-bottom toast-end z-50"
-        onClick={() => {setSuccess(null), setError(null)}}
-      >
+      <div className="toast toast-bottom toast-end z-50">
         {success && (
-          <div className="alert alert-success hover:bg-green-900 cursor-pointer border-0">
+          <div
+            className="alert alert-success hover:bg-green-900 cursor-pointer border-0"
+            onClick={() => {
+              setSuccess(null);
+            }}
+          >
             <span>{success}</span>
           </div>
         )}
         {error && (
-          <div className="alert alert-error hover:bg-red-900 cursor-pointer border-0">
+          <div
+            className="alert alert-error hover:bg-red-900 cursor-pointer border-0"
+            onClick={() => {
+              setError(null);
+            }}
+          >
             <span>{error}</span>
           </div>
         )}

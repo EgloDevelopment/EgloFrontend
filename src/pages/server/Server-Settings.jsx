@@ -55,7 +55,7 @@ function App() {
         setChannels(response.data.channels);
         setUsers(response.data.users);
         setAllowNewUsers(response.data.allow_new_users);
-        setNewServerName(response.data.name)
+        setNewServerName(response.data.name);
       } else {
         setError(response.data.error);
         console.log(response);
@@ -159,12 +159,14 @@ function App() {
   }
 
   async function modifyChannel(channel_id) {
-
     if (channelName.length > 25) {
-      setError("Channel name must be under 25 characters")
+      setError("Channel name must be under 25 characters");
     }
 
-    if (validator.isAlphanumeric(channelName) === false) {
+    if (
+      validator.isAlphanumeric(channelName) === false &&
+      validator.isEmpty(channelName) === false
+    ) {
       setError("Channel name is invalid");
       return;
     }
@@ -206,7 +208,6 @@ function App() {
       <div className="mt-24 ml-5">
         <p className="text-4xl bold mt-5">{serverName}</p>
         <p className="text-sm mt-2 text-zinc-500">{serverID}</p>
-        
 
         <div className="form-control w-full max-w-xs mt-24 mb-24">
           <p className="text-lg mb-3">Change server name</p>
@@ -373,19 +374,24 @@ function App() {
         </button>
       </div>
 
-      <div
-        className="toast toast-bottom toast-end z-50"
-        onClick={() => {
-          setSuccess(null), setError(null);
-        }}
-      >
+      <div className="toast toast-bottom toast-end z-50">
         {success && (
-          <div className="alert alert-success hover:bg-green-900 cursor-pointer border-0">
+          <div
+            className="alert alert-success hover:bg-green-900 cursor-pointer border-0"
+            onClick={() => {
+              setSuccess(null);
+            }}
+          >
             <span>{success}</span>
           </div>
         )}
         {error && (
-          <div className="alert alert-error hover:bg-red-900 cursor-pointer border-0">
+          <div
+            className="alert alert-error hover:bg-red-900 cursor-pointer border-0"
+            onClick={() => {
+              setError(null);
+            }}
+          >
             <span>{error}</span>
           </div>
         )}

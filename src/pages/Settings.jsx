@@ -22,7 +22,7 @@ function App() {
 
   const [allowFriendRequests, setAllowFriendRequests] = useState(true);
 
-  const [newRecoveryEmail, setNewRecoveryEmail] = useState("");
+  const [recoveryEmail, setRecoveryEmail] = useState("");
 
   const [deleteAccountConfirm, setDeleteAccountConfirm] = useState("");
 
@@ -37,7 +37,7 @@ function App() {
         setAllowFriendRequests(response.data.accepting_friend_requests);
         setAboutMe(response.data.about_me);
         setPreferredName(response.data.preferred_name);
-        setNewRecoveryEmail(response.data.recovery_email);
+        setRecoveryEmail(response.data.recovery_email);
       } else {
         setError(response.data.error);
         console.log(response);
@@ -98,7 +98,7 @@ function App() {
 
   async function changeRecoveryEmail() {
     const json = {
-      new_email: newRecoveryEmail,
+      new_email: recoveryEmail,
     };
 
     await axios
@@ -241,8 +241,8 @@ function App() {
             type="email"
             placeholder="No recovery email"
             className="input input-bordered input-secondary w-full max-w-xs "
-            value={newRecoveryEmail}
-            onChange={(e) => setNewRecoveryEmail(e.target.value)}
+            value={recoveryEmail}
+            onChange={(e) => setRecoveryEmail(e.target.value)}
           />
           <button
             className="capitalize mt-5 btn btn-outline"
@@ -335,19 +335,24 @@ function App() {
         </button>
       </div>
 
-      <div
-        className="toast toast-bottom toast-end z-50"
-        onClick={() => {
-          setSuccess(null), setError(null);
-        }}
-      >
+      <div className="toast toast-bottom toast-end z-50">
         {success && (
-          <div className="alert alert-success hover:bg-green-900 cursor-pointer border-0">
+          <div
+            className="alert alert-success hover:bg-green-900 cursor-pointer border-0"
+            onClick={() => {
+              setSuccess(null);
+            }}
+          >
             <span>{success}</span>
           </div>
         )}
         {error && (
-          <div className="alert alert-error hover:bg-red-900 cursor-pointer border-0">
+          <div
+            className="alert alert-error hover:bg-red-900 cursor-pointer border-0"
+            onClick={() => {
+              setError(null);
+            }}
+          >
             <span>{error}</span>
           </div>
         )}

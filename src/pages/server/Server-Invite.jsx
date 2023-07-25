@@ -22,7 +22,7 @@ function App() {
     await axios.post("/api/servers/join-server", json).then((response) => {
       if (response.data.success) {
         addToKeychain(Cookies.get("username"), code, id);
-        setSuccess("Joined server, you can close this window")
+        setSuccess("Joined server, you can close this window");
       } else {
         setError(response.data.error);
       }
@@ -42,19 +42,24 @@ function App() {
         Joining server
       </div>
 
-      <div
-        className="toast toast-bottom toast-end z-50"
-        onClick={() => {
-          setSuccess(null), setError(null);
-        }}
-      >
+      <div className="toast toast-bottom toast-end z-50">
         {success && (
-          <div className="alert alert-success hover:bg-green-900 cursor-pointer border-0">
+          <div
+            className="alert alert-success hover:bg-green-900 cursor-pointer border-0"
+            onClick={() => {
+              setSuccess(null);
+            }}
+          >
             <span>{success}</span>
           </div>
         )}
         {error && (
-          <div className="alert alert-error hover:bg-red-900 cursor-pointer border-0">
+          <div
+            className="alert alert-error hover:bg-red-900 cursor-pointer border-0"
+            onClick={() => {
+              setError(null);
+            }}
+          >
             <span>{error}</span>
           </div>
         )}

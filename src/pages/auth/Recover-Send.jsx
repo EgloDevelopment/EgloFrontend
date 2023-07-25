@@ -29,7 +29,6 @@ function App() {
 
   return (
     <>
-
       <div className="flex flex-col min-h-screen justify-center items-center">
         <div className="form-control w-full max-w-xs mt-8">
           <label className="label">
@@ -60,17 +59,24 @@ function App() {
         </div>
       </div>
 
-      <div
-        className="toast toast-bottom toast-end z-50"
-        onClick={() => {setSuccess(null), setError(null)}}
-      >
+      <div className="toast toast-bottom toast-end z-50">
         {success && (
-          <div className="alert alert-success hover:bg-green-900 cursor-pointer border-0">
+          <div
+            className="alert alert-success hover:bg-green-900 cursor-pointer border-0"
+            onClick={() => {
+              setSuccess(null);
+            }}
+          >
             <span>{success}</span>
           </div>
         )}
         {error && (
-          <div className="alert alert-error hover:bg-red-900 cursor-pointer border-0">
+          <div
+            className="alert alert-error hover:bg-red-900 cursor-pointer border-0"
+            onClick={() => {
+              setError(null);
+            }}
+          >
             <span>{error}</span>
           </div>
         )}
