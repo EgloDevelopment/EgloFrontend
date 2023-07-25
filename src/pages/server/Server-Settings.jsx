@@ -159,9 +159,9 @@ function App() {
   }
 
   async function modifyChannel(channel_id) {
-    if (validator.isEmpty(channelName) === true) {
-      setError("Channel name can not be empty");
-      return;
+
+    if (channelName.length > 25) {
+      setError("Channel name must be under 25 characters")
     }
 
     if (validator.isAlphanumeric(channelName) === false) {

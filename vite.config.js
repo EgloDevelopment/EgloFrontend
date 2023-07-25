@@ -7,11 +7,10 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://backend.eglo.pw",
+        target: "http://localhost:40002/",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
-        secure: false,
-        ws: true,
+        secure: true
       },
     }
   }
