@@ -7,6 +7,7 @@ import validator from "validator";
 import { BiArrowBack } from "react-icons/bi";
 
 import checkLoggedIn from "../../../functions/check-logged-in";
+import getPrivateKey from "../../../functions/get-private-key-from-keychain";
 
 function App() {
   const [success, setSuccess] = useState("");
@@ -42,6 +43,11 @@ function App() {
   async function getServerSettings() {
     const json = { server_id: server_id };
 
+    window.sessionStorage.setItem(
+      "current_key",
+      await getPrivateKey(server_id)
+    );
+
     await axios.post("/api/servers/get-settings", json).then((response) => {
       if (!response.data.error) {
         setServerName(response.data.name);
@@ -49,6 +55,7 @@ function App() {
         setChannels(response.data.channels);
         setUsers(response.data.users);
         setAllowNewUsers(response.data.allow_new_users);
+        setNewServerName(response.data.name)
       } else {
         setError(response.data.error);
         console.log(response);

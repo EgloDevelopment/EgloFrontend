@@ -18,14 +18,13 @@ function App() {
   const [newPassword2, setNewPassword2] = useState("");
 
   const [aboutMe, setAboutMe] = useState("");
-  const [preferredName, setPreferredName] = useState("")
+  const [preferredName, setPreferredName] = useState("");
 
   const [allowFriendRequests, setAllowFriendRequests] = useState(true);
 
-  const [currentRecoveryEmail, setCurrentRecoveryEmail] = useState("");
   const [newRecoveryEmail, setNewRecoveryEmail] = useState("");
 
-  const [deleteAccountConfirm, setDeleteAccountConfirm] = useState("")
+  const [deleteAccountConfirm, setDeleteAccountConfirm] = useState("");
 
   useEffect(() => {
     checkLoggedIn();
@@ -37,8 +36,8 @@ function App() {
       if (!response.data.error) {
         setAllowFriendRequests(response.data.accepting_friend_requests);
         setAboutMe(response.data.about_me);
-        setPreferredName(response.data.preferred_name)
-        setCurrentRecoveryEmail(response.data.recovery_email);
+        setPreferredName(response.data.preferred_name);
+        setNewRecoveryEmail(response.data.recovery_email);
       } else {
         setError(response.data.error);
         console.log(response);
@@ -115,19 +114,16 @@ function App() {
   }
 
   async function deleteAccount() {
+    const json = { password: deleteAccountConfirm };
 
-    const json = {password: deleteAccountConfirm}
-
-    await axios
-      .post("/api/settings/delete-account", json)
-      .then((response) => {
-        if (response.data.success) {
-          window.location.href = "/login"
-        } else {
-          setError(response.data.error);
-          console.log(response);
-        }
-      });
+    await axios.post("/api/settings/delete-account", json).then((response) => {
+      if (response.data.success) {
+        window.location.href = "/login";
+      } else {
+        setError(response.data.error);
+        console.log(response);
+      }
+    });
   }
 
   async function changeAboutMe() {
@@ -149,6 +145,20 @@ function App() {
       } else {
         setError(response.data.error);
         console.log(response);
+      }
+    });
+  }
+
+  async function logout() {
+    await axios.post("/api/auth/logout").then((response) => {
+      if (!response.data.error) {
+        Cookies.remove("token");
+        Cookies.remove("username");
+        Cookies.remove("id");
+        window.sessionStorage.removeItem("private_key");
+        window.location.href = "/login";
+      } else {
+        setError(response.data.error);
       }
     });
   }
@@ -229,7 +239,7 @@ function App() {
           <hr className="mb-5" />
           <input
             type="email"
-            placeholder={currentRecoveryEmail}
+            placeholder="No recovery email"
             className="input input-bordered input-secondary w-full max-w-xs "
             value={newRecoveryEmail}
             onChange={(e) => setNewRecoveryEmail(e.target.value)}
@@ -281,38 +291,44 @@ function App() {
       </div>
 
       <dialog
-          id="delete_account_modal"
-          className="modal modal-bottom sm:modal-middle"
-        >
-          <form method="dialog" className="modal-box border border-secondary">
-            <h3 className="font-bold text-lg text-white">Are you sure?</h3>
-            <div className="form-control w-full max-w-xs mt-5">
-              <label className="label">
-                <span className="label-text">Enter your password to confirm</span>
-              </label>
-              <input
-                type="password"
-                placeholder="Enter your password"
-                className="input input-bordered input-secondary w-full max-w-full text-white"
-                value={deleteAccountConfirm}
-                onChange={(e) => setDeleteAccountConfirm(e.target.value)}
-              />
-            </div>
-            <div className="modal-action">
-              <button
-                className="btn btn-error btn-outline capitalize"
-                onClick={() => deleteAccount()}
-              >
-                Delete
-              </button>
-              <button className="btn capitalize">Cancel</button>
-            </div>
-          </form>
-        </dialog>
+        id="delete_account_modal"
+        className="modal modal-bottom sm:modal-middle"
+      >
+        <form method="dialog" className="modal-box border border-secondary">
+          <h3 className="font-bold text-lg text-white">Are you sure?</h3>
+          <div className="form-control w-full max-w-xs mt-5">
+            <label className="label">
+              <span className="label-text">Enter your password to confirm</span>
+            </label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              className="input input-bordered input-secondary w-full max-w-full text-white"
+              value={deleteAccountConfirm}
+              onChange={(e) => setDeleteAccountConfirm(e.target.value)}
+            />
+          </div>
+          <div className="modal-action">
+            <button
+              className="btn btn-error btn-outline capitalize"
+              onClick={() => deleteAccount()}
+            >
+              Delete
+            </button>
+            <button className="btn capitalize">Cancel</button>
+          </div>
+        </form>
+      </dialog>
 
       <div className="w-full p-10">
         <button
-          className="capitalize w-full btn btn-error btn-outline mt-56"
+          className="capitalize w-full btn btn-outline mt-56"
+          onClick={() => logout()}
+        >
+          LOGOUT
+        </button>
+        <button
+          className="capitalize w-full btn btn-error btn-outline mt-10"
           onClick={() => window.delete_account_modal.showModal()}
         >
           DELETE ACCOUNT

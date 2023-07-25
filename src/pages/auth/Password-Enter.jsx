@@ -52,7 +52,7 @@ function App() {
         Cookies.remove("username");
         Cookies.remove("id");
         window.sessionStorage.removeItem("private_key")
-        window.location.href = "/";
+        window.location.href = "/login";
       } else {
         setError(response.data.error);
       }

@@ -18,6 +18,7 @@ import Settings from './pages/Settings'
 import FourOhFour from './404.jsx'
 
 import ServerSettings from './pages/server/Server-Settings'
+import ServerInvite from './pages/server/Server-Invite'
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -34,6 +35,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Route path="/password-enter" element={<PasswordEnter />} />
 
       <Route path="/server-settings" element={<ServerSettings />} />
+      <Route path="/server-invite" element={<ServerInvite/>} />
 
       <Route path="*" element={<FourOhFour />} />
     </Routes>

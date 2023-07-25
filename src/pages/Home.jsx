@@ -301,8 +301,7 @@ function App() {
 
   async function socketInitializer(channel_id) {
     try {
-      //CHANGE ME
-      ws = new WebSocket("ws://localhost:5000/data/realtime");
+      ws = new WebSocket("wss://backend.eglo.pw/data/realtime");
 
       ws.onopen = () => {
         ws.send(JSON.stringify({ action: "subscribe", id: channel_id }));
