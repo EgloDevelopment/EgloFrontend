@@ -13,7 +13,7 @@ RUN npm install
 COPY . .
 
 # Build the Vite.js project
-RUN yarn build
+RUN npm run build
 
 # Stage 2: Create a lightweight container for serving the static files
 FROM nginx:alpine
