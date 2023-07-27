@@ -16,6 +16,7 @@ import PasswordEnter from "./pages/auth/Password-Enter";
 import Settings from "./pages/Settings";
 
 import FourOhFour from "./404.jsx";
+import FiveHundred from "./500.jsx"
 
 import ServerSettings from "./pages/server/Server-Settings";
 import ServerInvite from "./pages/server/Server-Invite";
@@ -38,6 +39,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Route path="/server-invite" element={<ServerInvite />} />
 
       <Route path="*" element={<FourOhFour />} />
+      <Route path="/500" element={<FiveHundred />} />
     </Routes>
   </BrowserRouter>
 );

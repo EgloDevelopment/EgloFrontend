@@ -3,7 +3,16 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import validator from "validator";
-import { BiSend, BiUser, BiGridVertical } from "react-icons/bi";
+import {
+  BiSend,
+  BiUser,
+  BiGridVertical,
+  BiMenuAltLeft,
+  BiUserPlus,
+  BiServer,
+  BiArrowBack,
+  BiHash
+} from "react-icons/bi";
 
 import checkLoggedIn from "../../functions/check-logged-in";
 
@@ -12,6 +21,10 @@ import addToKeychain from "../../functions/add-to-keychain";
 import generateString from "../../functions/generate-string";
 import decrypt from "../../functions/decrypt";
 import encrypt from "../../functions/encrypt";
+
+import SidebarOption from "../components/messaging/sidebar-option";
+import Server from "../components/messaging/server";
+import User from "../components/messaging/user";
 
 let ws;
 
@@ -338,223 +351,241 @@ function App() {
 
   return (
     <>
-      <div className="fixed top-0 left-0 z-50 min-w-full navbar bg-base-300 rounded-box">
-        <div className="flex justify-start flex-1 px-2">
-          <div className="flex items-stretch">
-            <div className="dropdown dropdown-start">
-              <label
-                tabIndex={0}
-                className="normal-case btn btn-ghost rounded-btn"
-              >
-                Friends
-              </label>
-              <ul
-                tabIndex={0}
-                className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-64 mt-4 border border-secondary"
-              >
-                <button
-                  className="btn capitalize"
-                  onClick={() => window.add_friend_modal.showModal()}
-                >
-                  Add friend
-                </button>
+      <div className="fixed top-0 left-0 z-40 min-w-full navbar bg-base-300 rounded-box">
+        <div className="drawer-content">
+          <label
+            htmlFor="primary-sidebar"
+            className="btn btn-primary bg-base-300 border-0 drawer-button lg:hidden capitalize"
+          >
+            <BiMenuAltLeft />
+          </label>
+          <div className="absolute dropdown dropdown-end right-0 mr-2">
+            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+              <div className="w-10 rounded-full">
+                <a href="/settings">
+                  <img
+                    src={
+                      "https://api.dicebear.com/6.x/initials/svg?seed=" +
+                      Cookies.get("username") +
+                      "&backgroundType=gradientLinear"
+                    }
+                  />
+                </a>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div className="drawer lg:drawer-open fixed top-0 left-0 z-40 w-80">
+        <input id="primary-sidebar" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-side mt-16">
+          {!serverID ? (
+            <>
+              <ul className="menu p-4 w-80 h-full bg-base-200 text-base-content text-md">
+                <div onClick={() => window.add_friend_modal.show()}>
+                  <SidebarOption
+                    icon={<BiUserPlus className="h-6 w-6" />}
+                    text="Add friend"
+                  />
+                </div>
+
+                <div onClick={() => window.new_server_modal.show()}>
+                  <SidebarOption
+                    icon={<BiServer className="h-6 w-6" />}
+                    text="Create server"
+                  />
+                </div>
+
+                <hr className="mt-2" />
+                <p className="font-bold text-lg ml-3 mt-3">Direct Messages</p>
 
                 {friendsList.map((col) => (
+                  <div
+                    onClick={() => {
+                      setMessages([]);
+                      setChannelID(null),
+                        setDirectMessage(true),
+                        setServer(false);
+                      loadMessages(col.channel_id, col.channel_id),
+                        setChatName(col.username),
+                        setOtherUserID(col.id);
+                    }}
+                  >
+                    <User
+                      preferredName={col.preferred_name}
+                      username={col.username}
+                      loggedIn={col.logged_in}
+                    />
+                  </div>
+                ))}
+
+                <p className="font-bold text-lg ml-3 mt-3">Servers</p>
+                {serversList.map((col) => (
+                  <div
+                    onClick={() => {
+                      setMessages([]);
+                      setChannelID(null),
+                        setDirectMessage(false),
+                        setServer(true);
+                      setServerName(col.name);
+                      getChannels(col.id);
+                      setServerID(col.id);
+                      setServerOwner(col.server_owner);
+                    }}
+                  >
+                    <Server name={col.name} />
+                  </div>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <>
+              <ul className="menu p-4 w-80 h-full bg-base-200 text-base-content text-md">
+                <div
+                  onClick={() => {
+                    setServerID(""),
+                    setMessages([]),
+                    setChannelID(null),
+                    setDirectMessage(false),
+                    setServer(false),
+                    setChatName("");
+                  }}
+                >
+                  <SidebarOption
+                    icon={<BiArrowBack className="h-6 w-6" />}
+                    text="Back"
+                  />
+                </div>
+                <hr className="mt-2" />
+                <p className="font-bold text-lg ml-3 mt-3">Channels</p>
+                {serverChannels.map((col) => (
                   <>
-                    <li className="cursor-pointer m-1">
-                      <button
-                        onClick={() => {
-                          setMessages([]);
+                    <li
+                      className=""
+                      onClick={() => {
+                        setMessages([]),
                           setChannelID(null),
-                            setDirectMessage(true),
-                            setServer(false);
-                          loadMessages(col.channel_id, col.channel_id),
-                            setChatName(col.username),
-                            setOtherUserID(col.id);
-                        }}
-                      >
-                        {col.username}
-                      </button>
+                          setDirectMessage(false),
+                          setServer(true),
+                          loadMessages(col.channel_id, serverID),
+                          setChatName(col.name),
+                          (document.getElementById(
+                            "primary-sidebar"
+                          ).checked = false);
+                      }}
+                    >
+                      <div className="text-left text-lg mt-0">
+                        <BiHash className="opacity-75" />
+                        <div>
+                          <p className="-ml-2 font-semibold">{col.name}</p>
+                        </div>
+                      </div>
                     </li>
                   </>
                 ))}
               </ul>
-            </div>
-
-            <div className="dropdown dropdown-start">
-              <label
-                tabIndex={0}
-                className="normal-case btn btn-ghost rounded-btn"
-              >
-                Servers
-              </label>
-              <ul
-                tabIndex={0}
-                className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-64 mt-4 border border-secondary"
-              >
-                {!server ? (
-                  <>
-                    <button
-                      className="btn capitalize"
-                      onClick={() => window.new_server_modal.showModal()}
-                    >
-                      Create server
-                    </button>
-                    {serversList.map((col) => (
-                      <>
-                        <li className="cursor-pointer m-1">
-                          <button
-                            onClick={() => {
-                              setMessages([]);
-                              setChannelID(null),
-                                setDirectMessage(false),
-                                setServer(true);
-                              setServerName(col.name);
-                              getChannels(col.id);
-                              setServerID(col.id);
-                              setServerOwner(col.server_owner);
-                            }}
-                          >
-                            {col.name}
-                          </button>
-                        </li>
-                      </>
-                    ))}
-                  </>
-                ) : (
-                  <>
-                    <button
-                      className="btn capitalize"
-                      onClick={() => {
-                        setServer(false), setMessages([]), setChannelID(null);
-                      }}
-                    >
-                      Back
-                    </button>
-                    {serverChannels.map((col) => (
-                      <>
-                        <li className="cursor-pointer m-1">
-                          <button
-                            onClick={() => {
-                              setMessages([]);
-                              setChannelID(null),
-                                setDirectMessage(false),
-                                setServer(true);
-                              loadMessages(col.channel_id, serverID),
-                                setChatName("#" + col.name);
-                            }}
-                          >
-                            #{col.name}
-                          </button>
-                        </li>
-                      </>
-                    ))}
-                  </>
-                )}
-              </ul>
-            </div>
-          </div>
+            </>
+          )}
         </div>
+      </div>
 
-        {channelID && directMessage && (
-          <div className="dropdown dropdown-end mr-2">
-            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-              <div>
-                <BiUser />
-              </div>
-            </label>
-            <ul
-              tabIndex={0}
-              className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-36 mt-4 border border-secondary"
-            >
-              <li className="cursor-pointer m-1">
-                <button
-                  onClick={() => {
-                    setUserDataLoading(true),
-                      setUserData([]),
-                      showUserData(otherUserID);
-                  }}
-                >
-                  Profile
-                </button>
-              </li>
-              <li className="cursor-pointer m-1">
-                <button
-                  onClick={() => {
-                    removeFriend(channelID);
-                  }}
-                >
-                  Remove
-                </button>
-              </li>
-            </ul>
-          </div>
-        )}
+      {channelID && directMessage && (
+        <div className="absolute dropdown dropdown-end mt-2 z-50 right-0 mr-16">
+          <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+            <div>
+              <BiUser />
+            </div>
+          </label>
+          <ul
+            tabIndex={0}
+            className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-36 mt-4 border border-secondary"
+          >
+            <li className="cursor-pointer m-1">
+              <button
+                onClick={() => {
+                  setUserDataLoading(true),
+                    setUserData([]),
+                    showUserData(otherUserID);
+                }}
+              >
+                Profile
+              </button>
+            </li>
+            <li className="cursor-pointer m-1">
+              <button
+                onClick={() => {
+                  removeFriend(channelID);
+                }}
+              >
+                Remove
+              </button>
+            </li>
+          </ul>
+        </div>
+      )}
 
-        {server && (
-          <div className="dropdown dropdown-end mr-2">
-            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-              <div>
-                <BiGridVertical />
-              </div>
-            </label>
-            <ul
-              tabIndex={0}
-              className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-36 mt-4 border border-secondary"
-            >
-              {serverOwner === Cookies.get("id") && (
-                <>
-                  <li className="cursor-pointer m-1">
-                    <button
-                      onClick={() => {
-                        window.location.href =
-                          "/server-settings?id=" + serverID;
-                      }}
-                    >
-                      Settings
-                    </button>
-                  </li>
-                </>
-              )}
-              <li className="cursor-pointer m-1">
-                <button
-                  onClick={() => {
-                    window.invite_to_server_modal.showModal();
-                  }}
-                >
-                  Invite
-                </button>
-              </li>
-              {serverOwner !== Cookies.get("id") && (
+      {server && (
+        <div className="absolute dropdown dropdown-end mt-2 z-50 right-0 mr-16">
+          <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+            <div>
+              <BiGridVertical />
+            </div>
+          </label>
+          <ul
+            tabIndex={0}
+            className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-36 mt-4 border border-secondary"
+          >
+            {serverOwner === Cookies.get("id") && (
+              <>
                 <li className="cursor-pointer m-1">
                   <button
                     onClick={() => {
-                      leaveServer();
+                      window.location.href = "/server-settings?id=" + serverID;
                     }}
                   >
-                    Leave
+                    Settings
                   </button>
                 </li>
-              )}
-            </ul>
-          </div>
-        )}
-
-        <div className="dropdown dropdown-end">
-          <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-            <div className="w-10 rounded-full">
-              <a href="/settings">
-                <img
-                  src={
-                    "https://api.dicebear.com/6.x/initials/svg?seed=" +
-                    Cookies.get("username") +
-                    "&backgroundType=gradientLinear"
-                  }
-                />
-              </a>
-            </div>
-          </label>
+              </>
+            )}
+            <li className="cursor-pointer m-1">
+              <button
+                onClick={() => {
+                  window.invite_to_server_modal.showModal();
+                }}
+              >
+                Invite
+              </button>
+            </li>
+            {serverOwner !== Cookies.get("id") && (
+              <li className="cursor-pointer m-1">
+                <button
+                  onClick={() => {
+                    leaveServer();
+                  }}
+                >
+                  Leave
+                </button>
+              </li>
+            )}
+          </ul>
         </div>
+      )}
+
+      <div className="dropdown dropdown-end">
+        <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+          <div className="w-10 rounded-full">
+            <a href="/settings">
+              <img
+                src={
+                  "https://api.dicebear.com/6.x/initials/svg?seed=" +
+                  Cookies.get("username") +
+                  "&backgroundType=gradientLinear"
+                }
+              />
+            </a>
+          </div>
+        </label>
       </div>
 
       <dialog
@@ -732,9 +763,7 @@ function App() {
         </form>
       </dialog>
 
-      <div className="mt-24" />
-
-      <div className="break-all">
+      <div className="break-words">
         {messages.map((col) => (
           <>
             {col.sender_id === Cookies.get("id") ? (
@@ -826,14 +855,6 @@ function App() {
         ))}
       </div>
 
-      {server && !channelID && (
-        <>
-          <p className="text-center mt-96">
-            Select a channel for <b>{serverName}</b>
-          </p>
-        </>
-      )}
-
       <div className="mt-20" />
 
       {channelID && (
@@ -848,7 +869,7 @@ function App() {
             type="text"
             onKeyPress={handlePress}
             placeholder={"Send a message to " + chatName}
-            className="fixed input input-bordered input-secondary w-full bottom-0 left-0"
+            className="fixed input input-bordered input-secondary w-full bottom-0 left-0 lg:pl-[330px]"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
           />

@@ -139,6 +139,11 @@ function App() {
       return;
     }
 
+    if (validator.isAlphanumeric(preferredName) === false) {
+      setError("Preferred name is invalid")
+      return
+    }
+
     await axios.post("/api/settings/change-about-me", json).then((response) => {
       if (!response.data.error) {
         setSuccess("Updated About Me successfully");

@@ -20,8 +20,6 @@ function App() {
   const [serverName, setServerName] = useState("");
   const [serverID, setServerID] = useState("");
 
-  const [newServerName, setNewServerName] = useState("");
-
   const [newChannelName, setNewChannelName] = useState("");
 
   const [channels, setChannels] = useState([]);
@@ -55,7 +53,7 @@ function App() {
         setChannels(response.data.channels);
         setUsers(response.data.users);
         setAllowNewUsers(response.data.allow_new_users);
-        setNewServerName(response.data.name);
+        setServerName(response.data.name);
       } else {
         setError(response.data.error);
         console.log(response);
@@ -118,21 +116,22 @@ function App() {
   }
 
   async function changeServerName() {
-    if (validator.isEmpty(newServerName) === true) {
+    if (validator.isEmpty(serverName) === true) {
       setError("Server name can not be empty");
       return;
     }
 
-    if (validator.isAlphanumeric(newServerName) === false) {
+    if (validator.isAlphanumeric(serverName) === false) {
       setError("Server name is invalid");
       return;
     }
 
-    const json = { server_id: serverID, name: newServerName };
+    const json = { server_id: serverID, name: serverName };
 
     await axios.post("/api/servers/change-name", json).then((response) => {
       if (!response.data.error) {
-        setServerName(newServerName);
+        setServerName(serverName);
+        setSuccess("Changed server name")
       } else {
         setError(response.data.error);
         console.log(response);
@@ -216,8 +215,8 @@ function App() {
             type="name"
             placeholder="toasters_hangout"
             className="input input-bordered input-secondary w-full max-w-xs "
-            value={newServerName}
-            onChange={(e) => setNewServerName(e.target.value)}
+            value={serverName}
+            onChange={(e) => setServerName(e.target.value)}
           />
           <button
             className="capitalize mt-5 btn btn-outline"
