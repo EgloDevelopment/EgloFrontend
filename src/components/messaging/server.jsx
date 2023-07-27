@@ -14,7 +14,9 @@ function Component(props) {
             }
           />
 
-          <div>{props.name}</div>
+          <div>
+            <p className="font-semibold">{props.name}</p>
+          </div>
         </div>
       </li>
     </>

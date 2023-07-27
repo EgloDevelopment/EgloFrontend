@@ -35,11 +35,11 @@ function Component(props) {
           <div>
             {props.preferredName ? (
               <>
-                <p>{props.preferredName}</p>
+                <p className="font-bold">{props.preferredName}</p>
                 <p className="text-zinc-600 text-sm">{props.username}</p>
               </>
             ) : (
-              <>{props.username}</>
+              <p className="font-semibold">{props.username}</p>
             )}
           </div>
         </div>

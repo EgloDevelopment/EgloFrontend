@@ -11,7 +11,7 @@ import {
   BiUserPlus,
   BiServer,
   BiArrowBack,
-  BiHash
+  BiHash,
 } from "react-icons/bi";
 
 import checkLoggedIn from "../../functions/check-logged-in";
@@ -444,11 +444,11 @@ function App() {
                 <div
                   onClick={() => {
                     setServerID(""),
-                    setMessages([]),
-                    setChannelID(null),
-                    setDirectMessage(false),
-                    setServer(false),
-                    setChatName("");
+                      setMessages([]),
+                      setChannelID(null),
+                      setDirectMessage(false),
+                      setServer(false),
+                      setChatName("");
                   }}
                 >
                   <SidebarOption
@@ -490,7 +490,7 @@ function App() {
       </div>
 
       {channelID && directMessage && (
-        <div className="absolute dropdown dropdown-end mt-2 z-50 right-0 mr-16">
+        <div className="fixed dropdown dropdown-end mt-2 z-50 right-0 mr-16">
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <div>
               <BiUser />
@@ -525,7 +525,7 @@ function App() {
       )}
 
       {server && (
-        <div className="absolute dropdown dropdown-end mt-2 z-50 right-0 mr-16">
+        <div className="fixed dropdown dropdown-end mt-2 z-50 right-0 mr-16">
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <div>
               <BiGridVertical />
@@ -593,7 +593,9 @@ function App() {
         className="modal modal-bottom sm:modal-middle"
       >
         <form method="dialog" className="modal-box border border-secondary">
-          <h3 className="font-bold text-lg text-white">Add Friend</h3>
+          <h3 className="font-bold text-lg text-secondary-content">
+            Add Friend
+          </h3>
           <div className="form-control w-full max-w-xs mt-5">
             <label className="label">
               <span className="label-text">Enter your friends username</span>
@@ -623,7 +625,9 @@ function App() {
         className="modal modal-bottom sm:modal-middle"
       >
         <form method="dialog" className="modal-box border border-secondary">
-          <h3 className="font-bold text-lg text-white">Invite To Server</h3>
+          <h3 className="font-bold text-lg text-secondary-content">
+            Invite To Server
+          </h3>
           <div className="form-control w-full max-w-xs mt-5">
             <label className="label">
               <span className="label-text">Server code</span>
@@ -663,7 +667,9 @@ function App() {
         className="modal modal-bottom sm:modal-middle"
       >
         <form method="dialog" className="modal-box border border-secondary">
-          <h3 className="font-bold text-lg text-white">Create Server</h3>
+          <h3 className="font-bold text-lg text-secondary-content">
+            Create Server
+          </h3>
           <div className="form-control w-full max-w-xs mt-5">
             <label className="label">
               <span className="label-text">Server name</span>
@@ -704,13 +710,13 @@ function App() {
               >
                 {userData.preferred_name ? (
                   <>
-                    <h3 className="font-bold text-lg text-white">
+                    <h3 className="font-bold text-lg text-secondary-content">
                       {userData.preferred_name}
                     </h3>
                   </>
                 ) : (
                   <>
-                    <h3 className="font-bold text-lg text-white">
+                    <h3 className="font-bold text-lg text-secondary-content">
                       {userData.username}
                     </h3>
                   </>
@@ -762,6 +768,8 @@ function App() {
           )}
         </form>
       </dialog>
+
+      <div className="mt-20" />
 
       <div className="break-words">
         {messages.map((col) => (
@@ -869,7 +877,7 @@ function App() {
             type="text"
             onKeyPress={handlePress}
             placeholder={"Send a message to " + chatName}
-            className="fixed input input-bordered input-secondary w-full bottom-0 left-0 lg:pl-[330px]"
+            className="fixed input input-bordered border-l-0 border-r-0 border-b-0 input-secondary w-full bottom-0 left-0 lg:pl-[330px]"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
           />

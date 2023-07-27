@@ -82,7 +82,7 @@ function App() {
           </label>
           <input
             type="username"
-            placeholder="wicked_eglo_egg_969"
+            placeholder="Choose your username"
             className="input input-bordered input-secondary w-full max-w-xs"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
