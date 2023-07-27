@@ -75,6 +75,7 @@ function App() {
     checkLoggedIn();
     getFriendsList();
     getServersList();
+    document.getElementById("primary-sidebar").checked = true;
   }, []);
 
   async function scrollToBottom() {
@@ -265,7 +266,7 @@ function App() {
         }
 
         setNewMessage("");
-
+        document.getElementById("primary-sidebar").checked = false;
         scrollToBottom();
       } else {
         setError(response.data.error);
@@ -376,12 +377,13 @@ function App() {
           </div>
         </div>
       </div>
+      
       <div className="drawer lg:drawer-open fixed top-0 left-0 z-40 w-80">
         <input id="primary-sidebar" type="checkbox" className="drawer-toggle" />
         <div className="drawer-side mt-16">
           {!serverID ? (
             <>
-              <ul className="menu p-4 w-80 h-full bg-base-200 text-base-content text-md">
+              <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content text-md">
                 <div onClick={() => window.add_friend_modal.show()}>
                   <SidebarOption
                     icon={<BiUserPlus className="h-6 w-6" />}
@@ -440,7 +442,7 @@ function App() {
             </>
           ) : (
             <>
-              <ul className="menu p-4 w-80 h-full bg-base-200 text-base-content text-md">
+              <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content text-md">
                 <div
                   onClick={() => {
                     setServerID(""),
@@ -448,7 +450,9 @@ function App() {
                       setChannelID(null),
                       setDirectMessage(false),
                       setServer(false),
-                      setChatName("");
+                      setServerChannels([]),
+                      setServerName("");
+                    setChatName("");
                   }}
                 >
                   <SidebarOption
@@ -486,11 +490,12 @@ function App() {
               </ul>
             </>
           )}
+          <div className="mt-10" />
         </div>
       </div>
 
       {channelID && directMessage && (
-        <div className="fixed dropdown dropdown-end mt-2 z-50 right-0 mr-16">
+        <div className="fixed dropdown dropdown-end mt-2 z-50 right-0 top-0 mr-16">
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <div>
               <BiUser />
@@ -525,7 +530,7 @@ function App() {
       )}
 
       {server && (
-        <div className="fixed dropdown dropdown-end mt-2 z-50 right-0 mr-16">
+        <div className="fixed dropdown dropdown-end mt-2 z-50 right-0 top-0 mr-16">
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <div>
               <BiGridVertical />
@@ -571,22 +576,6 @@ function App() {
           </ul>
         </div>
       )}
-
-      <div className="dropdown dropdown-end">
-        <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-          <div className="w-10 rounded-full">
-            <a href="/settings">
-              <img
-                src={
-                  "https://api.dicebear.com/6.x/initials/svg?seed=" +
-                  Cookies.get("username") +
-                  "&backgroundType=gradientLinear"
-                }
-              />
-            </a>
-          </div>
-        </label>
-      </div>
 
       <dialog
         id="add_friend_modal"
@@ -818,7 +807,7 @@ function App() {
               </>
             ) : (
               <>
-                <div className="">
+                <div className="lg:ml-80">
                   <div className="chat chat-start">
                     <div className="chat-image avatar ml-2">
                       <div
