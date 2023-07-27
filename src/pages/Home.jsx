@@ -12,6 +12,7 @@ import {
   BiServer,
   BiArrowBack,
   BiHash,
+  BiGroup,
 } from "react-icons/bi";
 
 import checkLoggedIn from "../../functions/check-logged-in";
@@ -377,7 +378,7 @@ function App() {
           </div>
         </div>
       </div>
-      
+
       <div className="drawer lg:drawer-open fixed top-0 left-0 z-40 w-80">
         <input id="primary-sidebar" type="checkbox" className="drawer-toggle" />
         <div className="drawer-side mt-16">
@@ -388,6 +389,13 @@ function App() {
                   <SidebarOption
                     icon={<BiUserPlus className="h-6 w-6" />}
                     text="Add friend"
+                  />
+                </div>
+
+                <div onClick={() => window.new_server_modal.show()}>
+                  <SidebarOption
+                    icon={<BiGroup className="h-6 w-6" />}
+                    text="New group chat"
                   />
                 </div>
 
@@ -862,14 +870,29 @@ function App() {
           >
             <BiSend />
           </button>
-          <input
-            type="text"
-            onKeyPress={handlePress}
-            placeholder={"Send a message to " + chatName}
-            className="fixed input input-bordered border-l-0 border-r-0 border-b-0 input-secondary w-full bottom-0 left-0 lg:pl-[330px]"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-          />
+          {server ? (
+            <>
+              <input
+                type="text"
+                onKeyPress={handlePress}
+                placeholder={"Send a message to #" + chatName}
+                className="fixed input input-bordered border-l-0 border-r-0 border-b-0 input-secondary w-full bottom-0 left-0 lg:pl-[330px]"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+              />
+            </>
+          ) : (
+            <>
+              <input
+                type="text"
+                onKeyPress={handlePress}
+                placeholder={"Send a message to " + chatName}
+                className="fixed input input-bordered border-l-0 border-r-0 border-b-0 input-secondary w-full bottom-0 left-0 lg:pl-[330px]"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+              />
+            </>
+          )}
         </>
       )}
 
