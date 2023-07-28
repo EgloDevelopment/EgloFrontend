@@ -8,7 +8,6 @@ import {
   BiUser,
   BiGridVertical,
   BiMenuAltLeft,
-  BiUserPlus,
   BiServer,
   BiArrowBack,
   BiHash,
@@ -26,6 +25,7 @@ import encrypt from "../../functions/encrypt";
 import SidebarOption from "../components/messaging/sidebar-option";
 import Server from "../components/messaging/server";
 import User from "../components/messaging/user";
+import Group from "../components/messaging/group"
 
 let ws;
 
@@ -63,6 +63,9 @@ function App() {
   const [userData, setUserData] = useState([]);
   const [userDataLoading, setUserDataLoading] = useState(true);
 
+  const [groupChatUsernames, setGroupChatUsernames] = useState("");
+  const [groupsList, setGroupsList] = useState([]);
+
   const DATE_OPTIONS = {
     minute: "numeric",
     hour: "numeric",
@@ -75,6 +78,7 @@ function App() {
   useEffect(() => {
     checkLoggedIn();
     getFriendsList();
+    getGroupsList()
     getServersList();
     document.getElementById("primary-sidebar").checked = true;
   }, []);
@@ -111,7 +115,6 @@ function App() {
     await axios.post("/api/friends/add", json).then((response) => {
       if (response.data.success) {
         setAddFriendUsername("");
-        setError(null);
         addToKeychain(Cookies.get("username"), key, response.data.channel_id);
         addToKeychain(friend_username, key, response.data.channel_id);
         setSuccess("Added " + friend_username + " as friend");
@@ -157,6 +160,17 @@ function App() {
     await axios.post("/api/friends/get").then((response) => {
       if (!response.data.error) {
         setFriendsList(response.data);
+      } else {
+        setError(response.data.error);
+        console.log(response);
+      }
+    });
+  }
+
+  async function getGroupsList() {
+    await axios.post("/api/groups/get").then((response) => {
+      if (!response.data.error) {
+        setGroupsList(response.data);
       } else {
         setError(response.data.error);
         console.log(response);
@@ -351,6 +365,42 @@ function App() {
     }
   }
 
+  async function createGroupChat() {
+    if (validator.isEmpty(groupChatUsernames) === true) {
+      setError("Must provide usernames");
+      return;
+    }
+
+    let usernames = groupChatUsernames.split(",");
+
+    for (const val of usernames) {
+      if (
+        validator.isEmpty(val.trim()) === true ||
+        validator.isAlphanumeric(val.trim()) === false
+      ) {
+        setError("Username(s) invalid");
+        return;
+      }
+    }
+
+    const json = { users: usernames };
+
+    let key = generateString(50);
+
+    await axios.post("/api/groups/create", json).then((response) => {
+      if (!response.data.error) {
+        for (const val of response.data.users) {
+          addToKeychain(val, key, response.data.id);
+        }
+        setSuccess("Created group");
+        getGroupsList()
+      } else {
+        setError(response.data.error);
+        console.log(response);
+      }
+    });
+  }
+
   return (
     <>
       <div className="fixed top-0 left-0 z-40 min-w-full navbar bg-base-300 rounded-box">
@@ -387,12 +437,12 @@ function App() {
               <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content text-md">
                 <div onClick={() => window.add_friend_modal.show()}>
                   <SidebarOption
-                    icon={<BiUserPlus className="h-6 w-6" />}
+                    icon={<BiUser className="h-6 w-6" />}
                     text="Add friend"
                   />
                 </div>
 
-                <div onClick={() => window.new_server_modal.show()}>
+                <div onClick={() => window.new_group_chat_modal.show()}>
                   <SidebarOption
                     icon={<BiGroup className="h-6 w-6" />}
                     text="New group chat"
@@ -413,9 +463,7 @@ function App() {
                   <div
                     onClick={() => {
                       setMessages([]);
-                      setChannelID(null),
-                        setDirectMessage(true),
-                        setServer(false);
+                      setDirectMessage(true), setServer(false);
                       loadMessages(col.channel_id, col.channel_id),
                         setChatName(col.username),
                         setOtherUserID(col.id);
@@ -429,18 +477,36 @@ function App() {
                   </div>
                 ))}
 
+                <p className="font-bold text-lg ml-3 mt-3">Groups</p>
+
+                {groupsList.map((col) => (
+                  <div
+                    onClick={() => {
+                      setMessages([]);
+                      setDirectMessage(true), setServer(false);
+                      loadMessages(col.channel_id, col.channel_id),
+                        setChatName(col.username),
+                        setOtherUserID(col.id);
+                    }}
+                  >
+                    <Group
+                      name={col.name}
+                      users={col.users}
+                    />
+                  </div>
+                ))}
+
                 <p className="font-bold text-lg ml-3 mt-3">Servers</p>
                 {serversList.map((col) => (
                   <div
                     onClick={() => {
                       setMessages([]);
-                      setChannelID(null),
-                        setDirectMessage(false),
-                        setServer(true);
+                      setDirectMessage(false), setServer(true);
                       setServerName(col.name);
                       getChannels(col.id);
                       setServerID(col.id);
                       setServerOwner(col.server_owner);
+                      setChatName("");
                     }}
                   >
                     <Server name={col.name} />
@@ -453,7 +519,8 @@ function App() {
               <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content text-md">
                 <div
                   onClick={() => {
-                    setServerID(""),
+                    socketDisconnect(),
+                      setServerID(""),
                       setMessages([]),
                       setChannelID(null),
                       setDirectMessage(false),
@@ -599,7 +666,7 @@ function App() {
             </label>
             <input
               type="username"
-              placeholder="cool_eglo_computer_753"
+              placeholder="Your friend"
               className="input input-bordered input-secondary w-full max-w-full text-white"
               value={addFriendUsername}
               onChange={(e) => setAddFriendUsername(e.target.value)}
@@ -611,6 +678,60 @@ function App() {
               onClick={() => addFriend()}
             >
               Add
+            </button>
+            <button className="btn capitalize">Cancel</button>
+          </div>
+        </form>
+      </dialog>
+
+      <dialog
+        id="new_group_chat_modal"
+        className="modal modal-bottom sm:modal-middle"
+      >
+        <form method="dialog" className="modal-box border border-secondary">
+          <h3 className="font-bold text-lg text-secondary-content">
+            New Group Chat
+          </h3>
+          <div className="form-control w-full max-w-xs mt-5">
+            <label className="label">
+              <span className="label-text">Enter your friends usernames</span>
+            </label>
+            <input
+              type="username"
+              placeholder="Friends usernames"
+              className="input input-bordered input-secondary w-full max-w-full text-white"
+              value={groupChatUsernames}
+              onChange={(e) => setGroupChatUsernames(e.target.value)}
+            />
+            <label className="label">
+              <span className="label-text-alt">Separated by commas</span>
+            </label>
+          </div>
+          {groupChatUsernames.split(",").map((user, index) => {
+            const trimmedUser = user.trim();
+            if (trimmedUser !== "") {
+              return (
+                <div className="avatar mt-3 ml-3" key={index}>
+                  <div className="w-7 rounded-full">
+                    <img
+                      src={
+                        "https://api.dicebear.com/6.x/initials/svg?seed=" +
+                        trimmedUser +
+                        "&backgroundType=gradientLinear"
+                      }
+                    />
+                  </div>
+                </div>
+              );
+            }
+          })}
+
+          <div className="modal-action">
+            <button
+              className="btn btn-primary capitalize"
+              onClick={() => createGroupChat()}
+            >
+              Create
             </button>
             <button className="btn capitalize">Cancel</button>
           </div>
@@ -669,11 +790,11 @@ function App() {
           </h3>
           <div className="form-control w-full max-w-xs mt-5">
             <label className="label">
-              <span className="label-text">Server name</span>
+              <span className="label-text">Enter your server name</span>
             </label>
             <input
               type="username"
-              placeholder="cool_cat_hangout"
+              placeholder="Server name"
               className="input input-bordered input-secondary w-full max-w-full text-white"
               value={newServerName}
               onChange={(e) => setNewServerName(e.target.value)}
@@ -862,7 +983,7 @@ function App() {
 
       <div className="mt-20" />
 
-      {channelID && (
+      {chatName && (
         <>
           <button
             className="fixed btn btn-ghost bottom-0 right-0 z-50 capitalize"

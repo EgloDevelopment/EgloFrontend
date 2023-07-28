@@ -24,7 +24,7 @@ function Component(props) {
               </>
             )}
             <img
-              className="avatar w-8 rounded-full"
+              className="avatar w-8 rounded-full mb-1"
               src={
                 "https://api.dicebear.com/6.x/initials/svg?seed=" +
                 props.username +
