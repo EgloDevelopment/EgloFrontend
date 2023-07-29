@@ -21,6 +21,8 @@ import FiveHundred from "./500.jsx"
 import ServerSettings from "./pages/server/Server-Settings";
 import ServerInvite from "./pages/server/Server-Invite";
 
+import GroupSettings from "./pages/group/Group-Settings"
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
@@ -37,6 +39,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
       <Route path="/server-settings" element={<ServerSettings />} />
       <Route path="/server-invite" element={<ServerInvite />} />
+
+      <Route path="/group-settings" element={<GroupSettings />} />
 
       <Route path="*" element={<FourOhFour />} />
       <Route path="/500" element={<FiveHundred />} />

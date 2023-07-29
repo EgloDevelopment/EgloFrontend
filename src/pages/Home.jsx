@@ -12,6 +12,7 @@ import {
   BiArrowBack,
   BiHash,
   BiGroup,
+  BiCog
 } from "react-icons/bi";
 
 import checkLoggedIn from "../../functions/check-logged-in";
@@ -25,7 +26,7 @@ import encrypt from "../../functions/encrypt";
 import SidebarOption from "../components/messaging/sidebar-option";
 import Server from "../components/messaging/server";
 import User from "../components/messaging/user";
-import Group from "../components/messaging/group"
+import Group from "../components/messaging/group";
 
 let ws;
 
@@ -54,6 +55,7 @@ function App() {
 
   const [directMessage, setDirectMessage] = useState(false);
   const [server, setServer] = useState(false);
+  const [group, setGroup] = useState(false);
 
   const [serverChannels, setServerChannels] = useState([]);
   const [serverOwner, setServerOwner] = useState("");
@@ -65,6 +67,7 @@ function App() {
 
   const [groupChatUsernames, setGroupChatUsernames] = useState("");
   const [groupsList, setGroupsList] = useState([]);
+  const [groupID, setGroupID] = useState("")
 
   const DATE_OPTIONS = {
     minute: "numeric",
@@ -78,7 +81,7 @@ function App() {
   useEffect(() => {
     checkLoggedIn();
     getFriendsList();
-    getGroupsList()
+    getGroupsList();
     getServersList();
     document.getElementById("primary-sidebar").checked = true;
   }, []);
@@ -130,11 +133,6 @@ function App() {
   async function createServer() {
     if (validator.isEmpty(newServerName) === true) {
       setError("Name can not be empty");
-      return;
-    }
-
-    if (validator.isAlphanumeric(newServerName) === false) {
-      setError("Name is not valid");
       return;
     }
 
@@ -393,7 +391,8 @@ function App() {
           addToKeychain(val, key, response.data.id);
         }
         setSuccess("Created group");
-        getGroupsList()
+        setGroupChatUsernames("");
+        getGroupsList();
       } else {
         setError(response.data.error);
         console.log(response);
@@ -457,15 +456,19 @@ function App() {
                 </div>
 
                 <hr className="mt-2" />
-                <p className="font-bold text-lg ml-3 mt-3">Direct Messages</p>
+
+                {friendsList.length > 0 && (
+                  <p className="font-bold text-lg ml-3 mt-3">Direct Messages</p>
+                )}
 
                 {friendsList.map((col) => (
                   <div
                     onClick={() => {
                       setMessages([]);
-                      setDirectMessage(true), setServer(false);
+                      setDirectMessage(true), setGroup(false), setServer(false);
                       loadMessages(col.channel_id, col.channel_id),
                         setChatName(col.username),
+                        setGroupID(""),
                         setOtherUserID(col.id);
                     }}
                   >
@@ -477,34 +480,37 @@ function App() {
                   </div>
                 ))}
 
-                <p className="font-bold text-lg ml-3 mt-3">Groups</p>
+                {groupsList.length > 0 && (
+                  <p className="font-bold text-lg ml-3 mt-3">Groups</p>
+                )}
 
                 {groupsList.map((col) => (
                   <div
                     onClick={() => {
                       setMessages([]);
-                      setDirectMessage(true), setServer(false);
-                      loadMessages(col.channel_id, col.channel_id),
-                        setChatName(col.username),
-                        setOtherUserID(col.id);
+                      setDirectMessage(false), setGroup(true), setServer(false);
+                      loadMessages(col.channel_id, col.id),
+                      setGroupID(col.id),
+                        setChatName(col.name);
                     }}
                   >
-                    <Group
-                      name={col.name}
-                      users={col.users}
-                    />
+                    <Group name={col.name} users={col.users} />
                   </div>
                 ))}
 
-                <p className="font-bold text-lg ml-3 mt-3">Servers</p>
+                {serversList.length > 0 && (
+                  <p className="font-bold text-lg ml-3 mt-3">Servers</p>
+                )}
+
                 {serversList.map((col) => (
                   <div
                     onClick={() => {
                       setMessages([]);
-                      setDirectMessage(false), setServer(true);
+                      setDirectMessage(false), setGroup(false), setServer(true);
                       setServerName(col.name);
                       getChannels(col.id);
                       setServerID(col.id);
+                      setGroupID("");
                       setServerOwner(col.server_owner);
                       setChatName("");
                     }}
@@ -524,6 +530,7 @@ function App() {
                       setMessages([]),
                       setChannelID(null),
                       setDirectMessage(false),
+                      setGroup(false),
                       setServer(false),
                       setServerChannels([]),
                       setServerName("");
@@ -545,6 +552,7 @@ function App() {
                         setMessages([]),
                           setChannelID(null),
                           setDirectMessage(false),
+                          setGroup(false),
                           setServer(true),
                           loadMessages(col.channel_id, serverID),
                           setChatName(col.name),
@@ -649,6 +657,14 @@ function App() {
               </li>
             )}
           </ul>
+        </div>
+      )}
+
+      {group && (
+        <div className="fixed dropdown dropdown-end mt-2 z-50 right-0 top-0 mr-16" onClick={() => window.location.href = "/group-settings?id=" + groupID}>
+          <label className="btn btn-ghost btn-circle avatar">
+              <BiCog />
+          </label>
         </div>
       )}
 

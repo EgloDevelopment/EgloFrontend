@@ -83,11 +83,6 @@ function App() {
       return;
     }
 
-    if (validator.isAlphanumeric(newChannelName) === false) {
-      setError("Channel name is invalid");
-      return;
-    }
-
     const json = { server_id: serverID, channel_name: newChannelName };
 
     await axios.post("/api/servers/create-channel", json).then((response) => {
@@ -118,11 +113,6 @@ function App() {
   async function changeServerName() {
     if (validator.isEmpty(serverName) === true) {
       setError("Server name can not be empty");
-      return;
-    }
-
-    if (validator.isAlphanumeric(serverName) === false) {
-      setError("Server name is invalid");
       return;
     }
 
@@ -160,14 +150,6 @@ function App() {
   async function modifyChannel(channel_id) {
     if (channelName.length > 25) {
       setError("Channel name must be under 25 characters");
-    }
-
-    if (
-      validator.isAlphanumeric(channelName) === false &&
-      validator.isEmpty(channelName) === false
-    ) {
-      setError("Channel name is invalid");
-      return;
     }
 
     const json = {
