@@ -13,6 +13,12 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ""),
         secure: true,
       },
+      "/ackee": {
+        target: "https://ackee.eglo.pw",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ackee/, ""),
+        secure: true,
+      },
     },
   },
 });
