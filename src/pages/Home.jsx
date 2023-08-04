@@ -905,7 +905,7 @@ function App() {
 
       <div className="mt-20" />
 
-      <div className="break-words">
+      <div className="break-all">
         {messages.map((col) => (
           <>
             {col.sender_id === Cookies.get("id") ? (

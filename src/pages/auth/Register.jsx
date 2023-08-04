@@ -75,6 +75,10 @@ function App() {
   return (
     <>
       <div className="flex flex-col min-h-screen justify-center items-center">
+        <p className="absolute top-0 text-xs mt-1">
+          By registering you agree to the Terms of Service and Privacy Policy
+        </p>
+
         <div className="form-control w-full max-w-xs mt-8">
           <label className="label">
             <span className="label-text">What username do you want?</span>
@@ -134,10 +138,6 @@ function App() {
             login
           </a>
         </div>
-
-        <p className="absolute top-0 text-xs mt-1">
-          By registering you agree to the Terms of Service
-        </p>
       </div>
 
       <div className="toast toast-bottom toast-end z-50">
