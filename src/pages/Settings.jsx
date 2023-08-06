@@ -258,7 +258,10 @@ function App() {
               <li className="cursor-pointer m-1">
                 <button
                   onClick={() => {
-                    Cookies.set("theme", "black"),
+                    Cookies.set("theme", "black", {
+                      expires: 180,
+                      sameSite: "strict",
+                    }),
                       (window.location.href = "/settings");
                   }}
                 >
@@ -268,7 +271,10 @@ function App() {
               <li className="cursor-pointer m-1">
                 <button
                   onClick={() => {
-                    Cookies.set("theme", "lofi"),
+                    Cookies.set("theme", "lofi", {
+                      expires: 180,
+                      sameSite: "strict",
+                    }),
                       (window.location.href = "/settings");
                   }}
                 >
@@ -279,7 +285,10 @@ function App() {
               <li className="cursor-pointer m-1">
                 <button
                   onClick={() => {
-                    Cookies.set("theme", "business"),
+                    Cookies.set("theme", "business", {
+                      expires: 180,
+                      sameSite: "strict",
+                    }),
                       (window.location.href = "/settings");
                   }}
                 >
@@ -290,7 +299,10 @@ function App() {
               <li className="cursor-pointer m-1">
                 <button
                   onClick={() => {
-                    Cookies.set("theme", "wireframe"),
+                    Cookies.set("theme", "wireframe", {
+                      expires: 180,
+                      sameSite: "strict",
+                    }),
                       (window.location.href = "/settings");
                   }}
                 >
