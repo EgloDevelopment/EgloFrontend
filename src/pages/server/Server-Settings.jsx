@@ -358,7 +358,7 @@ function App() {
       <div className="toast toast-bottom toast-end z-50">
         {success && (
           <div
-            className="alert alert-success hover:bg-green-900 cursor-pointer border-0"
+            className="alert alert-success cursor-pointer border-0"
             onClick={() => {
               setSuccess(null);
             }}
@@ -368,7 +368,7 @@ function App() {
         )}
         {error && (
           <div
-            className="alert alert-error hover:bg-red-900 cursor-pointer border-0"
+            className="alert alert-error cursor-pointer border-0"
             onClick={() => {
               setError(null);
             }}

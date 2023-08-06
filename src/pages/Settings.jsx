@@ -38,6 +38,11 @@ function App() {
         setAboutMe(response.data.about_me);
         setPreferredName(response.data.preferred_name);
         setRecoveryEmail(response.data.recovery_email);
+        if (Cookies.get("dark-mode")) {
+          setTheme(Cookies.get("dark-mode"));
+        } else {
+          setTheme(true);
+        }
       } else {
         setError(response.data.error);
         console.log(response);
@@ -140,8 +145,8 @@ function App() {
     }
 
     if (validator.isAlphanumeric(preferredName) === false) {
-      setError("Preferred name is invalid")
-      return
+      setError("Preferred name is invalid");
+      return;
     }
 
     await axios.post("/api/settings/change-about-me", json).then((response) => {
@@ -237,6 +242,63 @@ function App() {
               checked={allowFriendRequests}
             />
           </label>
+        </div>
+
+        <div className="form-control mt-24 max-w-[10rem]">
+          <p className="text-lg mb-3">Visuals</p>
+          <hr className="mb-5" />
+          <div className="dropdown dropdown-start">
+            <label tabIndex={0} className="normal-case btn rounded-btn">
+              Themes
+            </label>
+            <ul
+              tabIndex={0}
+              className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-64 mt-4 border border-secondary"
+            >
+              <li className="cursor-pointer m-1">
+                <button
+                  onClick={() => {
+                    Cookies.set("theme", "black"),
+                      (window.location.href = "/settings");
+                  }}
+                >
+                  Dark
+                </button>
+              </li>
+              <li className="cursor-pointer m-1">
+                <button
+                  onClick={() => {
+                    Cookies.set("theme", "lofi"),
+                      (window.location.href = "/settings");
+                  }}
+                >
+                  Light
+                </button>
+              </li>
+
+              <li className="cursor-pointer m-1">
+                <button
+                  onClick={() => {
+                    Cookies.set("theme", "business"),
+                      (window.location.href = "/settings");
+                  }}
+                >
+                  Business
+                </button>
+              </li>
+
+              <li className="cursor-pointer m-1">
+                <button
+                  onClick={() => {
+                    Cookies.set("theme", "wireframe"),
+                      (window.location.href = "/settings");
+                  }}
+                >
+                  Wireframe
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div className="form-control w-full max-w-xs mt-24 mb-24">
@@ -343,7 +405,7 @@ function App() {
       <div className="toast toast-bottom toast-end z-50">
         {success && (
           <div
-            className="alert alert-success hover:bg-green-900 cursor-pointer border-0"
+            className="alert alert-success cursor-pointer border-0"
             onClick={() => {
               setSuccess(null);
             }}
@@ -353,7 +415,7 @@ function App() {
         )}
         {error && (
           <div
-            className="alert alert-error hover:bg-red-900 cursor-pointer border-0"
+            className="alert alert-error cursor-pointer border-0"
             onClick={() => {
               setError(null);
             }}

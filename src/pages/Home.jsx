@@ -1013,7 +1013,7 @@ function App() {
                 type="text"
                 onKeyPress={handlePress}
                 placeholder={"Send a message to #" + chatName}
-                className="fixed input input-bordered border-l-0 border-r-0 border-b-0 input-secondary w-full bottom-0 left-0 lg:pl-[330px]"
+                className="fixed input input-bordered border-l-0 border-r-0 border-b-0 input-secondary w-full bottom-0 left-0 lg:pl-[330px] pr-10"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
               />
@@ -1024,7 +1024,7 @@ function App() {
                 type="text"
                 onKeyPress={handlePress}
                 placeholder={"Send a message to " + chatName}
-                className="fixed input input-bordered border-l-0 border-r-0 border-b-0 input-secondary w-full bottom-0 left-0 lg:pl-[330px]"
+                className="message-input fixed input input-bordered border-l-0 border-r-0 border-b-0 input-secondary w-full bottom-0 left-0 lg:pl-[330px] pr-10"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
               />
@@ -1036,7 +1036,7 @@ function App() {
       <div className="toast toast-bottom toast-end z-50">
         {success && (
           <div
-            className="alert alert-success hover:bg-green-900 cursor-pointer border-0"
+            className="alert alert-success cursor-pointer border-0"
             onClick={() => {
               setSuccess(null);
             }}
@@ -1046,7 +1046,7 @@ function App() {
         )}
         {error && (
           <div
-            className="alert alert-error hover:bg-red-900 cursor-pointer border-0"
+            className="alert alert-error cursor-pointer border-0"
             onClick={() => {
               setError(null);
             }}

@@ -109,7 +109,7 @@ function App() {
       <div className="toast toast-bottom toast-end z-50">
         {error && (
           <div
-            className="alert alert-error hover:bg-red-900 cursor-pointer border-0"
+            className="alert alert-error cursor-pointer border-0"
             onClick={() => setError(null)}
           >
             <span>{error}</span>
