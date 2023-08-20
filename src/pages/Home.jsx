@@ -12,8 +12,11 @@ import {
   BiArrowBack,
   BiHash,
   BiGroup,
-  BiCog
+  BiCog,
+  BiUpload,
 } from "react-icons/bi";
+
+import fileDownload from "js-file-download";
 
 import checkLoggedIn from "../../functions/check-logged-in";
 
@@ -67,7 +70,9 @@ function App() {
 
   const [groupChatUsernames, setGroupChatUsernames] = useState("");
   const [groupsList, setGroupsList] = useState([]);
-  const [groupID, setGroupID] = useState("")
+  const [groupID, setGroupID] = useState("");
+
+  const [file, setFile] = useState([]);
 
   const DATE_OPTIONS = {
     minute: "numeric",
@@ -400,6 +405,69 @@ function App() {
     });
   }
 
+  async function uploadFile() {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await axios.post("/api/files/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    let encrypted_message = await encrypt(
+      "https://app.eglo.pw/api/file/" +
+        response.data.id +
+        "?" +
+        response.data.name
+    );
+
+    ws.send(
+      JSON.stringify({
+        action: "publish",
+        id: channelID,
+        sender_name: Cookies.get("username"),
+        sender_id: Cookies.get("id"),
+        time: Date.now(),
+        content: encrypted_message,
+      })
+    );
+
+    const json = { channel_id: channelID, content: encrypted_message };
+
+    await axios.post("/api/messages/send", json).then((response) => {
+      if (response.data.error) {
+        setError(response.data.error);
+        console.log(response);
+      }
+    });
+  }
+
+  async function downloadFile(url) {
+    let extract_first_pass = url.split("/").pop();
+    let extract_second_pass = extract_first_pass.split("?")[0];
+    let extract_third_pass = extract_first_pass.split(".").pop();
+    let extract_fourth_pass = extract_first_pass.split("?").pop();
+
+    const json = {
+      file_id: extract_second_pass,
+      extension: extract_third_pass,
+    };
+
+    await axios
+      .post("/api/files/download", json, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        if (!response.data.error) {
+          fileDownload(response.data, extract_fourth_pass);
+        } else {
+          setError(response.data.error);
+          console.log(response);
+        }
+      });
+  }
+
   return (
     <>
       <div className="fixed top-0 left-0 z-40 min-w-full navbar bg-base-300 rounded-box">
@@ -490,7 +558,7 @@ function App() {
                       setMessages([]);
                       setDirectMessage(false), setGroup(true), setServer(false);
                       loadMessages(col.channel_id, col.id),
-                      setGroupID(col.id),
+                        setGroupID(col.id),
                         setChatName(col.name);
                     }}
                   >
@@ -661,9 +729,14 @@ function App() {
       )}
 
       {group && (
-        <div className="fixed dropdown dropdown-end mt-2 z-50 right-0 top-0 mr-16" onClick={() => window.location.href = "/group-settings?id=" + groupID}>
+        <div
+          className="fixed dropdown dropdown-end mt-2 z-50 right-0 top-0 mr-16"
+          onClick={() =>
+            (window.location.href = "/group-settings?id=" + groupID)
+          }
+        >
           <label className="btn btn-ghost btn-circle avatar">
-              <BiCog />
+            <BiCog />
           </label>
         </div>
       )}
@@ -940,7 +1013,24 @@ function App() {
                     >
                       {Cookies.get("username")}
                     </div>
-                    <div className="chat-bubble">{col.content}</div>
+                    <div className="chat-bubble">
+                      {col.content.startsWith(
+                        "https://app.eglo.pw/api/file"
+                      ) ? (
+                        <>
+                          <button
+                            className="btn btn-wide"
+                            onClick={() => downloadFile(col.content)}
+                          >
+                            {col.content.substring(
+                              col.content.indexOf("?") + 1
+                            )}
+                          </button>
+                        </>
+                      ) : (
+                        <>{col.content}</>
+                      )}
+                    </div>
                     <div className="chat-footer opacity-50">
                       {new Date(col.time).toLocaleDateString(
                         "en-US",
@@ -982,7 +1072,24 @@ function App() {
                     >
                       {col.sender_name}
                     </div>
-                    <div className="chat-bubble">{col.content}</div>
+                    <div className="chat-bubble">
+                      {col.content.startsWith(
+                        "https://app.eglo.pw/api/file"
+                      ) ? (
+                        <>
+                          <button
+                            className="btn btn-wide"
+                            onClick={() => downloadFile(col.content)}
+                          >
+                            {col.content.substring(
+                              col.content.indexOf("?") + 1
+                            )}
+                          </button>
+                        </>
+                      ) : (
+                        <>{col.content}</>
+                      )}
+                    </div>
                     <div className="chat-footer opacity-50">
                       {new Date(col.time).toLocaleDateString(
                         "en-US",
@@ -999,8 +1106,47 @@ function App() {
 
       <div className="mt-20" />
 
+      <dialog
+        id="upload_file_modal"
+        className="modal modal-bottom sm:modal-middle"
+      >
+        <form method="dialog" className="modal-box border border-secondary">
+          <h3 className="font-bold text-lg text-secondary-content">
+            Upload file
+          </h3>
+          <div className="form-control w-full max-w-xs mt-5">
+            <div className="form-control w-full max-w-xs">
+              <label className="label">
+                <span className="label-text">Pick a file</span>
+                <span className="label-text-alt">100MB</span>
+              </label>
+              <input
+                type="file"
+                className="file-input file-input-bordered w-full max-w-xs"
+                onChange={() => setFile(event.target.files[0])}
+              />
+            </div>
+          </div>
+          <div className="modal-action mt-16">
+            <button
+              className="btn btn-primary capitalize"
+              onClick={() => uploadFile()}
+            >
+              Upload
+            </button>
+            <button className="btn capitalize">Cancel</button>
+          </div>
+        </form>
+      </dialog>
+
       {chatName && (
         <>
+          <button
+            className="fixed btn btn-ghost bottom-0 right-0 mr-12 z-50 capitalize"
+            onClick={() => window.upload_file_modal.show()}
+          >
+            <BiUpload />
+          </button>
           <button
             className="fixed btn btn-ghost bottom-0 right-0 z-50 capitalize"
             onClick={() => sendMessage()}
