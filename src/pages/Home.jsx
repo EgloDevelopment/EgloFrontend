@@ -25,6 +25,8 @@ import addToKeychain from "../../functions/add-to-keychain";
 import generateString from "../../functions/generate-string";
 import decrypt from "../../functions/decrypt";
 import encrypt from "../../functions/encrypt";
+import encryptFile from "../../functions/encrypt-file";
+import decryptFile from "../../functions/decrypt-file";
 
 import SidebarOption from "../components/messaging/sidebar-option";
 import Server from "../components/messaging/server";
@@ -407,7 +409,7 @@ function App() {
 
   async function uploadFile() {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file", await encryptFile(file));
 
     const response = await axios.post("/api/files/upload", formData, {
       headers: {
@@ -460,7 +462,9 @@ function App() {
       })
       .then((response) => {
         if (!response.data.error) {
-          fileDownload(response.data, extract_fourth_pass);
+          decryptFile(response.data).then((decrypted_file) => {
+            fileDownload(decrypted_file, extract_fourth_pass);
+          });
         } else {
           setError(response.data.error);
           console.log(response);
