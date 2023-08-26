@@ -7,8 +7,8 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        //target: "https://backend.eglo.pw",
-        target: "http://localhost:5000/",
+        target: "https://backend.eglo.pw",
+        //target: "http://100.69.124.41:5000/",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
         secure: true,
