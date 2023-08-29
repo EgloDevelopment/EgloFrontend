@@ -38,6 +38,10 @@ function App() {
           expires: 180,
           sameSite: "strict",
         });
+        Cookies.set("ens_subscriber_id", response.data.ens_subscriber_id, {
+          expires: 180,
+          sameSite: "strict",
+        });
         decryptPersonalPrivateKey(response.data.private_key, password).then(
           (result) => {
             window.sessionStorage.setItem("private_key", result);

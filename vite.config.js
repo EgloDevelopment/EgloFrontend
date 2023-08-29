@@ -7,8 +7,8 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        //target: "https://backend.eglo.pw",
-        target: "https://dev-main-backend.eglo.pw",
+        target: "https://backend.eglo.pw",
+        //target: "https://dev-main-backend.eglo.pw",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
         secure: true,
@@ -17,6 +17,11 @@ export default defineConfig({
         target: "https://ackee.eglo.pw",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/ackee/, ""),
+        secure: true,
+      },
+      "/ens": {
+        target: "http://100.115.14.60:2309/get-notifications",
+        changeOrigin: true,
         secure: true,
       },
     },
