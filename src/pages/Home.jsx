@@ -300,6 +300,10 @@ function App() {
       return;
     }
 
+    if (newMessage > 5000) {
+      setError("Message can not be over 5000 characters");
+    }
+
     let encrypted_message = await encrypt(newMessage);
 
     ws.send(
@@ -408,6 +412,7 @@ function App() {
   }
 
   async function uploadFile() {
+    window.global_loading.show();
     const formData = new FormData();
     formData.append("file", await encryptFile(file));
 
@@ -417,35 +422,42 @@ function App() {
       },
     });
 
-    let encrypted_message = await encrypt(
-      "https://app.eglo.pw/api/file/" +
-        response.data.id +
-        "?" +
-        response.data.name
-    );
+    if (response.data.success === true) {
+      let encrypted_message = await encrypt(
+        "https://app.eglo.pw/api/file/" +
+          response.data.id +
+          "?" +
+          response.data.name
+      );
 
-    ws.send(
-      JSON.stringify({
-        action: "publish",
-        id: channelID,
-        sender_name: Cookies.get("username"),
-        sender_id: Cookies.get("id"),
-        time: Date.now(),
-        content: encrypted_message,
-      })
-    );
+      const json = { channel_id: channelID, content: encrypted_message };
 
-    const json = { channel_id: channelID, content: encrypted_message };
+      ws.send(
+        JSON.stringify({
+          action: "publish",
+          id: channelID,
+          sender_name: Cookies.get("username"),
+          sender_id: Cookies.get("id"),
+          time: Date.now(),
+          content: encrypted_message,
+        })
+      );
 
-    await axios.post("/api/messages/send", json).then((response) => {
-      if (response.data.error) {
-        setError(response.data.error);
-        console.log(response);
-      }
-    });
+      await axios.post("/api/messages/send", json).then((response) => {
+        if (response.data.error) {
+          setError(response.data.error);
+          console.log(response);
+        }
+      });
+    } else {
+      setError(response.data.error);
+    }
+
+    window.global_loading.close();
   }
 
   async function downloadFile(url) {
+    window.global_loading.show();
     let extract_first_pass = url.split("/").pop();
     let extract_second_pass = extract_first_pass.split("?")[0];
     let extract_third_pass = extract_first_pass.split(".").pop();
@@ -470,6 +482,7 @@ function App() {
           console.log(response);
         }
       });
+    window.global_loading.close();
   }
 
   return (
@@ -1122,7 +1135,6 @@ function App() {
             <div className="form-control w-full max-w-xs">
               <label className="label">
                 <span className="label-text">Pick a file</span>
-                <span className="label-text-alt">100MB</span>
               </label>
               <input
                 type="file"
@@ -1143,16 +1155,30 @@ function App() {
         </form>
       </dialog>
 
+      <dialog
+        id="global_loading"
+        className="modal modal-bottom sm:modal-middle"
+      >
+        <form method="dialog" className="modal-box border border-secondary">
+          <div className="flex items-center justify-center mt-16 mb-16">
+            <span className="loading loading-spinner text-secondary" />
+          </div>
+        </form>
+      </dialog>
+
       {chatName && (
         <>
+          <button className="fixed btn btn-ghost bottom-0 right-0 mr-24 z-30 capitalize">
+            {newMessage.length}/5000
+          </button>
           <button
-            className="fixed btn btn-ghost bottom-0 right-0 mr-12 z-50 capitalize"
+            className="fixed btn btn-ghost bottom-0 right-0 mr-12 z-30 capitalize"
             onClick={() => window.upload_file_modal.show()}
           >
             <BiUpload />
           </button>
           <button
-            className="fixed btn btn-ghost bottom-0 right-0 z-50 capitalize"
+            className="fixed btn btn-ghost bottom-0 right-0 z-30 capitalize"
             onClick={() => sendMessage()}
           >
             <BiSend />
@@ -1163,7 +1189,7 @@ function App() {
                 type="text"
                 onKeyPress={handlePress}
                 placeholder={"Send a message to #" + chatName}
-                className="fixed input input-bordered border-l-0 border-r-0 border-b-0 input-secondary w-full bottom-0 left-0 lg:pl-[330px] pr-10"
+                className="fixed input input-bordered border-l-0 border-r-0 border-b-0 input-secondary w-full bottom-0 left-0 lg:pl-[330px] pr-48"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
               />
@@ -1174,7 +1200,7 @@ function App() {
                 type="text"
                 onKeyPress={handlePress}
                 placeholder={"Send a message to " + chatName}
-                className="message-input fixed input input-bordered border-l-0 border-r-0 border-b-0 input-secondary w-full bottom-0 left-0 lg:pl-[330px] pr-10"
+                className="message-input fixed input input-bordered border-l-0 border-r-0 border-b-0 input-secondary w-full bottom-0 left-0 lg:pl-[330px] pr-48"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
               />
