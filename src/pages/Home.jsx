@@ -33,6 +33,8 @@ import Server from "../components/messaging/server";
 import User from "../components/messaging/user";
 import Group from "../components/messaging/group";
 
+import Notifications from "../components/general/notifications";
+
 let ws;
 
 function App() {
@@ -300,8 +302,9 @@ function App() {
       return;
     }
 
-    if (newMessage > 5000) {
+    if (newMessage.length > 5000) {
       setError("Message can not be over 5000 characters");
+      return;
     }
 
     let encrypted_message = await encrypt(newMessage);
@@ -495,6 +498,13 @@ function App() {
           >
             <BiMenuAltLeft />
           </label>
+
+          <div className="absolute dropdown dropdown-end right-0 mr-16">
+            <div className="rounded-full">
+              <Notifications />
+            </div>
+          </div>
+
           <div className="absolute dropdown dropdown-end right-0 mr-2">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
@@ -663,8 +673,8 @@ function App() {
       </div>
 
       {channelID && directMessage && (
-        <div className="fixed dropdown dropdown-end mt-2 z-50 right-0 top-0 mr-16">
-          <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+        <div className="fixed dropdown dropdown-end mt-2 z-50 right-0 top-0 mr-[7.7rem]">
+          <label tabIndex={0} className="btn btn-circle avatar">
             <div>
               <BiUser />
             </div>
@@ -698,8 +708,8 @@ function App() {
       )}
 
       {server && (
-        <div className="fixed dropdown dropdown-end mt-2 z-50 right-0 top-0 mr-16">
-          <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+        <div className="fixed dropdown dropdown-end mt-2 z-50 right-0 top-0 mr-[7.7rem]">
+          <label tabIndex={0} className="btn btn-circle avatar">
             <div>
               <BiGridVertical />
             </div>
@@ -747,12 +757,12 @@ function App() {
 
       {group && (
         <div
-          className="fixed dropdown dropdown-end mt-2 z-50 right-0 top-0 mr-16"
+          className="fixed dropdown dropdown-end mt-2 z-50 right-0 top-0 mr-[7.7rem]"
           onClick={() =>
             (window.location.href = "/group-settings?id=" + groupID)
           }
         >
-          <label className="btn btn-ghost btn-circle avatar">
+          <label className="btn btn-circle avatar">
             <BiCog />
           </label>
         </div>

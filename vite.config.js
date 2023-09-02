@@ -20,8 +20,9 @@ export default defineConfig({
         secure: true,
       },
       "/ens": {
-        target: "http://100.115.14.60:2309/get-notifications",
+        target: "http://100.115.14.60:2309/",
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ens/, ""),
         secure: true,
       },
     },
