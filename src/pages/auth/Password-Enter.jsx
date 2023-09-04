@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -6,15 +6,27 @@ import validator from "validator";
 
 import decryptPersonalPrivateKey from "../../../functions/decrypt-personal-private-key";
 
-function App() {
-  const [error, setError] = useState(false);
+import { BiLockOpenAlt } from "react-icons/bi";
+import { BiLogOut } from "react-icons/bi"
 
-  const [username] = useState(Cookies.get("username"));
+import { Button, ButtonGroup } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
+
+function App() {
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [logoutLoading, setLoadoutLoading] = useState(false)
+
+  const [error, setError] = useState("");
+
+  const [username, setUsername] = useState(Cookies.get("username"));
   const [password, setPassword] = useState("");
 
   async function login() {
+    setLoginLoading(true);
+
     if (validator.isEmpty(password) === true) {
       setError("Password can not be empty");
+      setLoginLoading(false);
       return;
     }
 
@@ -33,6 +45,10 @@ function App() {
           expires: 180,
           sameSite: "strict",
         });
+        Cookies.set("ens_subscriber_id", response.data.ens_subscriber_id, {
+          expires: 180,
+          sameSite: "strict",
+        });
         decryptPersonalPrivateKey(response.data.private_key, password).then(
           (result) => {
             window.sessionStorage.setItem("private_key", result);
@@ -41,11 +57,13 @@ function App() {
         window.location.href = "/";
       } else {
         setError(response.data.error);
+        setLoginLoading(false);
       }
     });
   }
 
   async function logout() {
+    setLoadoutLoading(true)
     await axios.post("/api/auth/logout").then((response) => {
       if (!response.data.error) {
         Cookies.remove("token");
@@ -54,6 +72,7 @@ function App() {
         window.sessionStorage.removeItem("private_key");
         window.location.href = "/login";
       } else {
+        setLoadoutLoading(false)
         setError(response.data.error);
       }
     });
@@ -62,59 +81,55 @@ function App() {
   return (
     <>
       <div className="flex flex-col min-h-screen justify-center items-center">
+        <div className="form-control w-full max-w-xs mt-8">
+          
         <div className="avatar">
-          <div className="w-14 rounded-full">
+          <div className="w-10 rounded-full">
             <img
               src={
                 "https://api.dicebear.com/6.x/initials/svg?seed=" +
-                Cookies.get("username") +
+                username +
                 "&backgroundType=gradientLinear"
               }
             />
           </div>
         </div>
 
-        <b className="text-lg mt-2">{username}</b>
+        <p className="text-xl mt-3 mb-5">Welcome back, {username}</p>
 
-        <div className="form-control w-full max-w-xs mt-5">
-          <label className="label">
-            <span className="label-text">Enter your account password</span>
-          </label>
-          <input
+          <Input
             type="password"
-            placeholder="Your password"
-            className="input input-bordered input-secondary w-full max-w-xs"
+            label="Password"
+            variant="bordered"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            className="mt-5"
+            validationState={error.includes("Password") && "invalid"}
+            errorMessage={error.includes("Password") && error}
           />
-        </div>
-        <div className="form-control w-full max-w-xs mt-9">
-          <button
-            className="capitalize btn btn-outline w-full"
+
+          <Button
+            color="primary"
+            className="mt-5"
+            variant="shadow"
+            startContent={loginLoading ? null : <BiLockOpenAlt />}
+            isLoading={loginLoading}
             onClick={() => login()}
           >
-            login
-          </button>
-          <div className="form-control w-full max-w-xs mt-4">
-            <button
-              className="capitalize btn btn-ghost w-full"
-              onClick={() => logout()}
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </div>
+            Login to Eglo
+          </Button>
 
-      <div className="toast toast-bottom toast-end z-50">
-        {error && (
-          <div
-            className="alert alert-error cursor-pointer border-0"
-            onClick={() => setError(null)}
+          <Button
+            color="primary"
+            className="mt-5"
+            variant="light"
+            startContent={logoutLoading ? null : <BiLogOut />}
+            isLoading={logoutLoading}
+            onClick={() => logout()}
           >
-            <span>{error}</span>
-          </div>
-        )}
+            Logout
+          </Button>
+        </div>
       </div>
     </>
   );

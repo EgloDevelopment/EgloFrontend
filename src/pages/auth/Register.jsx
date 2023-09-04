@@ -1,35 +1,51 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import axios from "axios";
+import Cookies from "js-cookie";
 import validator from "validator";
 
 import generateKeys from "../../../functions/generate-keys";
+import decryptPersonalPrivateKey from "../../../functions/decrypt-personal-private-key";
+
+import { BiLockOpenAlt, BiUser } from "react-icons/bi";
+import { BiUserPlus } from "react-icons/bi";
+
+import { Button, ButtonGroup } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
 
 function App() {
-  const [error, setError] = useState(false);
+  const [registerLoading, setRegisterLoading] = useState(false);
+
+  const [error, setError] = useState("");
 
   const [username, setUsername] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
 
   async function register() {
+    setRegisterLoading(true);
+
     if (validator.isEmpty(username) === true) {
       setError("Username can not be empty");
+      setRegisterLoading(false);
       return;
     }
 
     if (username.length > 20) {
       setError("Username must be below 20 characters");
+      setRegisterLoading(false);
       return;
     }
 
     if (validator.isAlphanumeric(username) === false) {
       setError("Username can be only letters or numbers");
+      setRegisterLoading(false);
       return;
     }
 
     if (validator.isEmpty(username) === true) {
       setError("Username can not be empty");
+      setRegisterLoading(false);
       return;
     }
 
@@ -38,20 +54,21 @@ function App() {
       validator.isEmpty(password2) === true
     ) {
       setError("Password can not be empty");
+      setRegisterLoading(false);
       return;
     }
 
     if (password1 !== password2) {
       setError("Passwords must match");
+      setRegisterLoading(false);
       return;
     }
 
     if (validator.isStrongPassword(password1) === false) {
       setError("Password does not meet the requirements");
+      setRegisterLoading(false);
       return;
     }
-
-    setError(null);
 
     let { publicKey, privateKey } = await generateKeys(password1);
 
@@ -64,10 +81,32 @@ function App() {
     };
 
     await axios.post("/api/auth/register", json).then((response) => {
-      if (response.data.success) {
-        window.location.href = "/login";
+      if (response.data.token) {
+        Cookies.set("token", response.data.token, {
+          expires: 180,
+          sameSite: "strict",
+        });
+        Cookies.set("username", response.data.username, {
+          expires: 180,
+          sameSite: "strict",
+        });
+        Cookies.set("id", response.data.id, {
+          expires: 180,
+          sameSite: "strict",
+        });
+        Cookies.set("ens_subscriber_id", response.data.ens_subscriber_id, {
+          expires: 180,
+          sameSite: "strict",
+        });
+        decryptPersonalPrivateKey(response.data.private_key, password1).then(
+          (result) => {
+            window.sessionStorage.setItem("private_key", result);
+          }
+        );
+        window.location.href = "/";
       } else {
         setError(response.data.error);
+        setRegisterLoading(false);
       }
     });
   }
@@ -75,80 +114,62 @@ function App() {
   return (
     <>
       <div className="flex flex-col min-h-screen justify-center items-center">
-        <p className="absolute top-0 text-xs mt-1">
-          By registering you agree to the Terms of Service and Privacy Policy
-        </p>
-
         <div className="form-control w-full max-w-xs mt-8">
-          <label className="label">
-            <span className="label-text">What username do you want?</span>
-            <span className="label-text-alt">{username.length}/20</span>
-          </label>
-          <input
+          <p className="text-2xl">Register</p>
+          <Input
             type="username"
-            placeholder="Choose your username"
-            className="input input-bordered input-secondary w-full max-w-xs"
+            label="Username"
+            variant="bordered"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            className="mt-5"
+            validationState={error.includes("Username") && "invalid"}
+            errorMessage={error.includes("Username") && error}
           />
-        </div>
 
-        <div className="form-control w-full max-w-xs mt-5">
-          <label className="label">
-            <span className="label-text">Now enter your secure password</span>
-          </label>
-          <input
+          <Input
             type="password"
-            placeholder="Your password"
-            className="input input-bordered input-secondary w-full max-w-xs"
+            label="Password"
+            variant="bordered"
             value={password1}
             onChange={(e) => setPassword1(e.target.value)}
+            className="mt-5"
+            validationState={error.includes("Password") && "invalid"}
+            errorMessage={error.includes("Password") && error}
           />
-          <label className="label">
-            <span className="label-text-alt">
-              8+ Characters, Symbols & Numbers with Capitals
-            </span>
-          </label>
-        </div>
 
-        <div className="form-control w-full max-w-xs mt-4">
-          <label className="label">
-            <span className="label-text">Make sure its correct...</span>
-          </label>
-          <input
+          <Input
             type="password"
-            placeholder="Your password again"
-            className="input input-bordered input-secondary w-full max-w-xs"
+            label="Password again"
+            variant="bordered"
             value={password2}
             onChange={(e) => setPassword2(e.target.value)}
+            className="mt-5"
+            validationState={error.includes("Password") && "invalid"}
+            errorMessage={error.includes("Password") && error}
           />
-        </div>
 
-        <div className="form-control w-full max-w-xs mt-9">
-          <button
-            className="capitalize btn btn-outline w-full"
+          <Button
+            color="primary"
+            className="mt-5"
+            variant="shadow"
+            startContent={registerLoading ? null : <BiUserPlus />}
+            isLoading={registerLoading}
             onClick={() => register()}
           >
-            register
-          </button>
-        </div>
+            Register for Eglo
+          </Button>
 
-        <div className="form-control w-full max-w-xs mt-4">
-          <a href="/login" className="capitalize btn btn-ghost w-full">
-            login
-          </a>
-        </div>
-      </div>
-
-      <div className="toast toast-bottom toast-end z-50">
-        {error && (
-          <div
-            className="alert alert-error cursor-pointer border-0"
-            onClick={() => setError(null)}
+          <Button
+            color="primary"
+            className="mt-5"
+            variant="light"
+            startContent={<BiLockOpenAlt />}
+            onClick={() => (window.location.href = "/login")}
           >
-            <span>{error}</span>
-          </div>
-        )}
+            Login
+          </Button>
+        </div>
       </div>
     </>
   );
