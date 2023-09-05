@@ -114,7 +114,7 @@ function App() {
             variant="shadow"
             startContent={loginLoading ? null : <BiLockOpenAlt />}
             isLoading={loginLoading}
-            onClick={() => login()}
+            onPress={() => login()}
           >
             Login to Eglo
           </Button>
@@ -125,7 +125,7 @@ function App() {
             variant="light"
             startContent={logoutLoading ? null : <BiLogOut />}
             isLoading={logoutLoading}
-            onClick={() => logout()}
+            onPress={() => logout()}
           >
             Logout
           </Button>

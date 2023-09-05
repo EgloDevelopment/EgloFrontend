@@ -63,7 +63,7 @@ function App() {
             variant="shadow"
             startContent={recoverLoading ? null : <BiSend />}
             isLoading={recoverLoading}
-            onClick={() => recover()}
+            onPress={() => recover()}
           >
             Send email
           </Button>
@@ -73,7 +73,7 @@ function App() {
             className="mt-5"
             variant="light"
             startContent={<BiArrowBack />}
-            onClick={() => (window.location.href = "/login")}
+            onPress={() => (window.location.href = "/login")}
           >
             Back
           </Button>

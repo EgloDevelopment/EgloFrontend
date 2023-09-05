@@ -107,7 +107,7 @@ function App() {
             variant="shadow"
             startContent={loginLoading ? null : <BiLockOpenAlt />}
             isLoading={loginLoading}
-            onClick={() => login()}
+            onPress={() => login()}
           >
             Login to Eglo
           </Button>
@@ -117,7 +117,7 @@ function App() {
             className="mt-5"
             variant="light"
             startContent={<BiUserPlus />}
-            onClick={() => (window.location.href = "/register")}
+            onPress={() => (window.location.href = "/register")}
           >
             Register
           </Button>

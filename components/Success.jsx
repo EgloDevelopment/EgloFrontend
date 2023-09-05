@@ -26,7 +26,7 @@ function Component(props) {
                 <Button
                   color="danger"
                   variant="light"
-                  onClick={() => props.setShowSuccess(false)}
+                  onPress={() => props.setShowSuccess(false)}
                 >
                   Close
                 </Button>

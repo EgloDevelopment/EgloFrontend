@@ -113,7 +113,8 @@ function App() {
 
   return (
     <>
-      <div className="flex flex-col min-h-screen justify-center items-center">
+    <p className="text-center text-xs text-default-500 mt-1">By registering you agree to the Terms of Use and Privacy Policy</p>
+      <div className="flex flex-col min-h-screen justify-center items-center -mt-5">
         <div className="form-control w-full max-w-xs mt-8">
           <p className="text-2xl">Register</p>
           <Input
@@ -127,6 +128,8 @@ function App() {
             errorMessage={error.includes("Username") && error}
           />
 
+          <p className="text-xs mt-2 text-default-500">Must be unique to you.</p>
+
           <Input
             type="password"
             label="Password"
@@ -137,6 +140,10 @@ function App() {
             validationState={error.includes("Password") && "invalid"}
             errorMessage={error.includes("Password") && error}
           />
+
+          <p className="text-xs mt-2 text-default-500">
+            8+ Characters with Symbols, Numbers, and Capitals.
+          </p>
 
           <Input
             type="password"
@@ -149,13 +156,17 @@ function App() {
             errorMessage={error.includes("Password") && error}
           />
 
+          <p className="text-xs mt-2 text-default-500">
+            8+ Characters with Symbols, Numbers, and Capitals.
+          </p>
+
           <Button
             color="primary"
             className="mt-5"
             variant="shadow"
             startContent={registerLoading ? null : <BiUserPlus />}
             isLoading={registerLoading}
-            onClick={() => register()}
+            onPress={() => register()}
           >
             Register for Eglo
           </Button>
@@ -165,7 +176,7 @@ function App() {
             className="mt-5"
             variant="light"
             startContent={<BiLockOpenAlt />}
-            onClick={() => (window.location.href = "/login")}
+            onPress={() => (window.location.href = "/login")}
           >
             Login
           </Button>
