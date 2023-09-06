@@ -48,7 +48,7 @@ function Component(props) {
   }
 
   return (
-    <div className="fixed top-0 left-0 overflow-y-scroll bg-default-50 z-40 w-72 h-full mt-14">
+    <div className={"fixed top-0 left-0 overflow-y-scroll bg-default-50 z-40 w-72 h-full mt-14 " + props.state}>
       {friends.length > 0 && (
         <>
           <p className="font-bold text-lg ml-2 mt-5">Friends</p>
@@ -138,7 +138,7 @@ function Component(props) {
         </>
       ))}
 
-      {groups.length > 0 && (
+      {servers.length > 0 && (
         <>
           <p className="font-bold text-lg ml-2 mt-5">Servers</p>
         </>

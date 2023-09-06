@@ -13,6 +13,7 @@ import { BiSolidUser } from "react-icons/bi";
 import { BiSolidServer } from "react-icons/bi";
 import { BiSolidGroup } from "react-icons/bi";
 import { BiSolidLogOut } from "react-icons/bi";
+import { BiSolidFoodMenu } from "react-icons/bi"
 
 function Component(props) {
   return (
@@ -29,12 +30,19 @@ function Component(props) {
         <DropdownTrigger>
           <Button
             variant="bordered"
-            className="fixed right-0 mt-[0.4rem] mr-24"
+            className="fixed right-0 mt-[0.4rem] mr-[6.5rem]"
           >
             Options
           </Button>
         </DropdownTrigger>
         <DropdownMenu aria-label="Static Actions">
+        <DropdownItem
+            key="new"
+            startContent={<BiSolidFoodMenu className="opacity-50" />}
+            onPress={() => props.toggleSidebarState()}
+          >
+            Toggle sidebar
+          </DropdownItem>
           <DropdownItem
             key="new"
             startContent={<BiSolidUser className="opacity-50" />}
@@ -45,12 +53,14 @@ function Component(props) {
           <DropdownItem
             key="edit"
             startContent={<BiSolidServer className="opacity-50" />}
+            onPress={() => props.setShowNewServer(true)}
           >
             New server
           </DropdownItem>
           <DropdownItem
             key="copy"
             startContent={<BiSolidGroup className="opacity-50" />}
+            onPress={() => props.setShowNewGroupChat(true)}
           >
             Create group chat
           </DropdownItem>

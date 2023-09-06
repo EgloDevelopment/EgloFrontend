@@ -11,7 +11,7 @@ import {
 
 import { Input } from "@nextui-org/react";
 
-import { BiUserPlus } from "react-icons/bi";
+import { BiPlus } from "react-icons/bi";
 
 import axios from "axios";
 import validator from "validator";
@@ -23,34 +23,34 @@ import addToKeychain from "../functions/add-to-keychain";
 function Component(props) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const [addFriendLoading, setAddFriendLoading] = useState(false);
+  const [newServerLoading, setNewServerLoading] = useState(false);
 
   const [error, setError] = useState("");
 
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
 
-  async function addFriend() {
-    setAddFriendLoading(true);
+  async function createServer() {
+    setNewServerLoading(true);
 
-    if (validator.isEmpty(username) === true) {
-      setError("Username can not be empty");
-      setAddFriendLoading(false);
+    if (validator.isEmpty(name) === true) {
+      setError("Name can not be empty");
+      setNewServerLoading(false);
       return;
     }
 
     let key = generateString(50);
 
-    const json = { username: username };
-    await axios.post("/api/friends/add", json).then((response) => {
+    const json = { name: name };
+    await axios.post("/api/servers/create-server", json).then((response) => {
       if (response.data.success) {
+        setName("");
         addToKeychain(Cookies.get("username"), key, response.data.id);
-        addToKeychain(username, key, response.data.id);
-        setUsername("");
-        props.setShowAddFriend(false);
-        setAddFriendLoading(false);
+        setNewServerLoading(false);
+        props.setShowNewServer(false);
+        setName("");
       } else {
-        setAddFriendLoading(false);
         setError(response.data.error);
+        setNewServerLoading(false);
         console.log(response);
       }
     });
@@ -59,7 +59,7 @@ function Component(props) {
   return (
     <>
       <Modal
-        isOpen={props.showAddFriend}
+        isOpen={props.showNewServer}
         onOpenChange={onOpenChange}
         hideCloseButton={true}
       >
@@ -67,15 +67,15 @@ function Component(props) {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Add friend
+                New server
               </ModalHeader>
               <ModalBody>
                 <Input
-                  type="username"
-                  label="Username"
+                  type="name"
+                  label="Server name"
                   variant="bordered"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="mt-5 max-w-[20rem]"
                   validationState={error !== "" && "invalid"}
                   errorMessage={error !== "" && error}
@@ -86,20 +86,18 @@ function Component(props) {
                   color="danger"
                   variant="light"
                   onPress={() => {
-                    props.setShowAddFriend(false),
-                      setUsername(""),
-                      setError("");
+                    props.setShowNewServer(false), setName(""), setError("");
                   }}
                 >
                   Close
                 </Button>
                 <Button
                   color="primary"
-                  startContent={addFriendLoading ? null : <BiUserPlus />}
-                  isLoading={addFriendLoading}
-                  onPress={() => addFriend()}
+                  startContent={newServerLoading ? null : <BiPlus />}
+                  isLoading={newServerLoading}
+                  onPress={() => createServer()}
                 >
-                  Add friend
+                  Create server
                 </Button>
               </ModalFooter>
             </>
