@@ -11,7 +11,7 @@ import { Textarea } from "@nextui-org/react";
 import { Switch } from "@nextui-org/react";
 import { Avatar, AvatarGroup, AvatarIcon } from "@nextui-org/react";
 
-import checkLoggedIn from "../../functions/check-logged-in";
+import checkLoggedIn from "../../../functions/check-logged-in";
 
 function App() {
   const [allowFriendRequests, setAllowFriendRequests] = useState(true);

@@ -10,13 +10,15 @@ import "./main.css";
 
 
 import Home from "./pages/Home.jsx"
-import Settings from "./pages/Settings.jsx"
+import UserSettings from "./pages/settings/User-Settings.jsx"
 
 import Login from "./pages/auth/Login.jsx"
 import PasswordEnter from "./pages/auth/Password-Enter.jsx"
 import Register from "./pages/auth/Register.jsx"
 import RecoverSend from "./pages/auth/Recover-Send.jsx"
 import RecoverHandle from "./pages/auth/Recover-Handle.jsx"
+
+import GroupSettings from "./pages/settings/Group-Settings.jsx"
 
 import FourOhFour from "./pages/404.jsx"
 import FiveHundred from "./pages/500.jsx"
@@ -26,7 +28,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <NextUIProvider>
       <Routes>
         <Route index element={<Home />} />
-        <Route path="/settings" element={<Settings />} />
+        <Route path="/settings" element={<UserSettings />} />
+
+        <Route path="/group-settings" element={<GroupSettings />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/password-enter" element={<PasswordEnter />} />

@@ -41,10 +41,15 @@ function Component(props) {
                     </p>
                   </>
                 )}
-                <p className="text-lg font-bold">About me:</p>
-                <p className="-mt-3 text-default-400">
-                  {props.userToView.about_me}
-                </p>
+
+                {props.userToView.about_me && (
+                  <>
+                    <p className="text-lg font-bold">About me:</p>
+                    <p className="-mt-3 text-default-400">
+                      {props.userToView.about_me}
+                    </p>
+                  </>
+                )}
 
                 <p className="text-lg font-bold">Account info:</p>
                 <p className="-mt-3 text-default-400">

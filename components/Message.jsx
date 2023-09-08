@@ -30,8 +30,7 @@ function Component(props) {
           )}
           <div>
             <p
-              className="text-default-500 -mt-[4.1rem] ml-14"
-              onClick={() => props.loadProfile(props.username)}
+              className="text-default-500 -mt-[3.8rem] ml-14 text-sm"
             >
               {props.username}
             </p>
