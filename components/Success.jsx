@@ -24,7 +24,7 @@ function Component(props) {
               </ModalBody>
               <ModalFooter>
                 <Button
-                  color="danger"
+                  color="primary"
                   variant="light"
                   onPress={() => props.setShowSuccess(false)}
                 >

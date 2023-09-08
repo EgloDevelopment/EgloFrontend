@@ -39,6 +39,7 @@ function Component(props) {
         <DropdownItem
             key="new"
             startContent={<BiSolidFoodMenu className="opacity-50" />}
+            className="lg:hidden"
             onPress={() => props.toggleSidebarState()}
           >
             Toggle sidebar

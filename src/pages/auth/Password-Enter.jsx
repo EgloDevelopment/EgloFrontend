@@ -8,7 +8,7 @@ import decryptPersonalPrivateKey from "../../../functions/decrypt-personal-priva
 
 import { BiLockOpenAlt } from "react-icons/bi";
 import { BiLogOut } from "react-icons/bi"
-
+import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/react";
 import { Button, ButtonGroup } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
 
@@ -84,18 +84,15 @@ function App() {
         <div className="form-control w-full max-w-xs mt-8">
           
         <div className="avatar">
-          <div className="w-10 rounded-full">
-            <img
-              src={
-                "https://api.dicebear.com/6.x/initials/svg?seed=" +
-                username +
-                "&backgroundType=gradientLinear"
-              }
-            />
-          </div>
+        <Avatar
+          src={
+            "https://api.dicebear.com/6.x/initials/svg?seed=" +
+            username +
+            "&backgroundType=gradientLinear"
+          }
+        />
+          <p className="font-bold text-xl ml-2 mt-1">{username}</p>
         </div>
-
-        <p className="text-xl mt-3 mb-5">Welcome back, {username}</p>
 
           <Input
             type="password"

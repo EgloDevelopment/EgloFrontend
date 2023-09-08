@@ -42,6 +42,10 @@ function App() {
           expires: 180,
           sameSite: "strict",
         });
+        Cookies.set("theme", "dark", {
+          expires: 180,
+          sameSite: "strict",
+        });
         Cookies.set("username", response.data.username, {
           expires: 180,
           sameSite: "strict",
