@@ -23,6 +23,8 @@ import Message from "../../components/Message";
 import UserProfile from "../../components/User-Profile";
 import ChatComponent from "../../components/Chat-Component";
 import LeaveServer from "../../components/Leave-Server";
+import ServerInvite from "../../components/Server-Invite";
+import JoinServer from "../../components/Join-Server";
 
 import decrypt from "../../functions/decrypt";
 import encrypt from "../../functions/encrypt";
@@ -51,6 +53,8 @@ function App() {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userToView, setUserToView] = useState([]);
 
+  const [showServerInvite, setsShowServerInvite] = useState(false);
+
   const [chatName, setChatName] = useState("");
   const [chatType, setChatType] = useState("");
   const [parentID, setParentID] = useState("");
@@ -60,6 +64,9 @@ function App() {
 
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+
+  const [showJoinServer, setShowJoinServer] = useState(false);
+  const [serverToJoin, setServerToJoin] = useState([]);
 
   const [sidebarState, setSidebarState] = useState("shown");
 
@@ -95,6 +102,11 @@ function App() {
       setParentID(data.id);
       parent_id = data.id;
       chat_type = "direct";
+
+      window.sessionStorage.setItem(
+        "current_key",
+        await getPrivateKey(parent_id)
+      );
     } else if (data.group_owner) {
       setChatName(data.name);
       setParentName(data.name);
@@ -103,6 +115,11 @@ function App() {
       setParentID(data.id);
       parent_id = data.id;
       chat_type = "group";
+
+      window.sessionStorage.setItem(
+        "current_key",
+        await getPrivateKey(parent_id)
+      );
     } else {
       setChatName(data.name);
       setChatType("server");
@@ -110,11 +127,6 @@ function App() {
       chat_type = "server";
       parent_id = parentID;
     }
-
-    window.sessionStorage.setItem(
-      "current_key",
-      await getPrivateKey(parent_id)
-    );
 
     const json = { channel_id: data.channel_id };
 
@@ -217,7 +229,6 @@ function App() {
 
   async function socketDisconnect() {
     if (ws) {
-      window.sessionStorage.removeItem("current_key");
       ws.send(JSON.stringify({ action: "unsubscribe", id: channelID }));
       ws.close();
     }
@@ -231,6 +242,29 @@ function App() {
     }
   }
 
+  async function loadJoinServer(data) {
+    setShowJoinServer(true);
+
+    let extract_first_pass = data.split("?id=")[1];
+    let extract_second_pass = extract_first_pass.split("#")[0];
+    let extract_third_pass = extract_first_pass.split("#")[1].slice(0, 50);
+
+    console.log(extract_first_pass);
+    console.log(extract_second_pass);
+    console.log(extract_third_pass);
+
+    const json = { id: extract_second_pass };
+
+    await axios.post("/api/servers/get-server", json).then((response) => {
+      setServerToJoin({
+        name: response.data.name,
+        id: response.data.id,
+        user_count: response.data.users.length,
+        key: extract_third_pass,
+      });
+    });
+  }
+
   async function clear() {
     socketDisconnect();
     setMessages([]);
@@ -240,6 +274,7 @@ function App() {
     setChatType("");
     setParentID("");
     setParentName("");
+    setMessage("");
   }
 
   return (
@@ -278,8 +313,15 @@ function App() {
             clear={clear}
             setShowLeaveServer={setShowLeaveServer}
             setServerToLeave={setServerToLeave}
+            setShowServerInvite={setsShowServerInvite}
           />
         }
+      />
+
+      <ServerInvite
+        showServerInvite={showServerInvite}
+        setsShowServerInvite={setsShowServerInvite}
+        parentID={parentID}
       />
 
       <NewGroupChat
@@ -297,6 +339,13 @@ function App() {
         setShowNewServer={setShowNewServer}
       />
 
+      <JoinServer
+        setShowJoinServer={setShowJoinServer}
+        showJoinServer={showJoinServer}
+        serverToJoin={serverToJoin}
+        setServerToJoin={setServerToJoin}
+      />
+
       <Sidebar
         loadMessages={loadMessages}
         state={sidebarState}
@@ -308,6 +357,7 @@ function App() {
         setShowAddFriend={setShowAddFriend}
         setShowNewServer={setShowNewServer}
         setShowNewGroupChat={setShowNewGroupChat}
+        socketDisconnect={socketDisconnect}
       />
 
       <div className="mt-32 lg:ml-72 mb-20">
@@ -319,6 +369,7 @@ function App() {
               time={col.time}
               showAvatar={true}
               loadProfile={loadProfile}
+              loadJoinServer={loadJoinServer}
             />
           </>
         ))}
@@ -339,6 +390,7 @@ function App() {
             onKeyPress={handlePress}
             endContent={
               <ButtonGroup>
+                {/*
                 <Button
                   color="primary"
                   variant="bordered"
@@ -347,6 +399,7 @@ function App() {
                 >
                   <BiUpload />
                 </Button>
+            */}
                 <Button
                   color="primary"
                   variant="bordered"

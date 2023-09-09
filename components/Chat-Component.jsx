@@ -14,6 +14,7 @@ import { BiSolidMessageAlt } from "react-icons/bi";
 import { BiSolidUser } from "react-icons/bi";
 import { BiSolidCog } from "react-icons/bi";
 import { BiSolidLogOut } from "react-icons/bi";
+import { BiSolidEnvelope } from "react-icons/bi"
 
 function Component(props) {
   async function removeFriend() {
@@ -96,6 +97,15 @@ function Component(props) {
                 }
               >
                 Settings
+              </DropdownItem>
+              <DropdownItem
+                key="invite"
+                startContent={<BiSolidEnvelope className="opacity-50" />}
+                onPress={() =>
+                  props.setShowServerInvite(true)
+                }
+              >
+                Invite to server
               </DropdownItem>
               <DropdownItem
                 key="leave"

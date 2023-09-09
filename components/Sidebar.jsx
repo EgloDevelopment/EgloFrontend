@@ -13,6 +13,8 @@ import { BiSolidUser } from "react-icons/bi";
 import { BiSolidServer } from "react-icons/bi";
 import { BiSolidGroup } from "react-icons/bi";
 
+import getPrivateKey from "../functions/get-private-key-from-keychain";
+
 function Component(props) {
   const [friends, setFriends] = useState([]);
   const [groups, setGroups] = useState([]);
@@ -100,6 +102,9 @@ function Component(props) {
                         props.clear(),
                           getChannels(col.id),
                           setViewing("channels"),
+                          getPrivateKey(col.id).then((key) => {
+                            window.sessionStorage.setItem("current_key", key)
+                          })
                           props.setParentID(col.id),
                           props.setParentName(col.name),
                           props.setChatType("server");
@@ -272,7 +277,7 @@ function Component(props) {
                   <>
                     <div
                       className="flex text-left transition hover:bg-content2 focus:bg-content2 ml-2 mr-2 rounded-lg cursor-pointer text-md mt-1"
-                      onClick={() => props.loadMessages(col)}
+                    onClick={() => {props.socketDisconnect(), props.loadMessages(col)}}
                     >
                       <div className="ml-3 mt-2 mb-2">
                         <div>
