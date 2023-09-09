@@ -8,22 +8,21 @@ import { NextUIProvider } from "@nextui-org/react";
 
 import "./main.css";
 
+import Home from "./pages/Home.jsx";
 
-import Home from "./pages/Home.jsx"
+import UserSettings from "./pages/settings/User-Settings.jsx";
+import ServerSettings from "./pages/settings/Server-Settings.jsx";
 
-import UserSettings from "./pages/settings/User-Settings.jsx"
-import ServerSettings from "./pages/settings/Server-Settings.jsx"
+import Login from "./pages/auth/Login.jsx";
+import PasswordEnter from "./pages/auth/Password-Enter.jsx";
+import Register from "./pages/auth/Register.jsx";
+import RecoverSend from "./pages/auth/Recover-Send.jsx";
+import RecoverHandle from "./pages/auth/Recover-Handle.jsx";
 
-import Login from "./pages/auth/Login.jsx"
-import PasswordEnter from "./pages/auth/Password-Enter.jsx"
-import Register from "./pages/auth/Register.jsx"
-import RecoverSend from "./pages/auth/Recover-Send.jsx"
-import RecoverHandle from "./pages/auth/Recover-Handle.jsx"
+import GroupSettings from "./pages/settings/Group-Settings.jsx";
 
-import GroupSettings from "./pages/settings/Group-Settings.jsx"
-
-import FourOhFour from "./pages/404.jsx"
-import FiveHundred from "./pages/500.jsx"
+import FourOhFour from "./pages/404.jsx";
+import FiveHundred from "./pages/500.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>

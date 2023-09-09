@@ -23,7 +23,7 @@ function Component(props) {
 
     await axios.post("/api/servers/leave", json).then((response) => {
       if (!response.data.error) {
-        props.setShowLeaveServer(false)
+        props.setShowLeaveServer(false);
       } else {
         setError(response.data.error);
         console.log(response);
@@ -50,13 +50,15 @@ function Component(props) {
                   {props.serverToLeave.name}?
                 </p>
 
-                {error !== "" && (<p className="text-danger">{error}</p>)}
+                {error !== "" && <p className="text-danger">{error}</p>}
               </ModalBody>
               <ModalFooter>
                 <Button
                   color="primary"
                   variant="light"
-                  onPress={() => {setError(""), props.setShowLeaveServer(false)}}
+                  onPress={() => {
+                    setError(""), props.setShowLeaveServer(false);
+                  }}
                 >
                   Cancel
                 </Button>

@@ -305,7 +305,6 @@ function App() {
         setParentID={setParentID}
         setParentName={setParentName}
         setChatType={setChatType}
-
         setShowAddFriend={setShowAddFriend}
         setShowNewServer={setShowNewServer}
         setShowNewGroupChat={setShowNewGroupChat}

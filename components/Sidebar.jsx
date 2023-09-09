@@ -116,6 +116,8 @@ function Component(props) {
             </>
           ))}
 
+          <div className="mt-15"></div>
+
           {servers.length !== 0 && (
             <hr className="mt-3 w-[3rem] ml-[0.5rem] border-default-400" />
           )}
@@ -258,6 +260,8 @@ function Component(props) {
             </div>
           </>
         )}
+
+        <div className="mt-15"></div>
 
         {viewing === "channels" && (
           <>

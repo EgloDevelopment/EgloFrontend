@@ -3,12 +3,8 @@ import { Card, CardBody } from "@nextui-org/react";
 
 function Component(props) {
   return (
-    <Card
-      className={`absolute bottom-0 right-0 px-2 bg-${props.type}`}
-    >
-      <CardBody>
-        {props.message}
-      </CardBody>
+    <Card className={`absolute bottom-0 right-0 px-2 bg-${props.type}`}>
+      <CardBody>{props.message}</CardBody>
     </Card>
   );
 }

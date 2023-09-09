@@ -14,11 +14,17 @@ function Component(props) {
 
   return (
     <>
-      <Modal isOpen={props.showSuccess} onOpenChange={onOpenChange} hideCloseButton={true}>
+      <Modal
+        isOpen={props.showSuccess}
+        onOpenChange={onOpenChange}
+        hideCloseButton={true}
+      >
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Success!</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                Success!
+              </ModalHeader>
               <ModalBody>
                 <p>{props.text}</p>
               </ModalBody>

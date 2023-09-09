@@ -98,7 +98,10 @@ function App() {
             errorMessage={error.includes("Password") && error}
             endContent={
               <>
-                <a href="/recover-send" className="text-xs text-default-400 transition hover:text-default-600">
+                <a
+                  href="/recover-send"
+                  className="text-xs text-default-400 transition hover:text-default-600"
+                >
                   Forgot?
                 </a>
               </>

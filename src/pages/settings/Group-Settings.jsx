@@ -27,7 +27,7 @@ function App() {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userToView, setUserToView] = useState([]);
 
-  const [deleteGroupName, setDeleteGroupName] = useState("")
+  const [deleteGroupName, setDeleteGroupName] = useState("");
 
   const [groupName, setGroupName] = useState("");
   const [users, setUsers] = useState([]);
@@ -93,7 +93,7 @@ function App() {
 
     await axios.post("/api/groups/delete-group", json).then((response) => {
       if (!response.data.error) {
-        window.location.href = "/"
+        window.location.href = "/";
       } else {
         console.log(response);
       }

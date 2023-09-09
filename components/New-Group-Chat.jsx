@@ -30,17 +30,17 @@ function Component(props) {
   const [users, setUsers] = useState("");
 
   async function newGroupChat() {
-    setNewGroupChatLoading(true)
+    setNewGroupChatLoading(true);
 
     if (validator.isEmpty(users) === true) {
       setError("Must provide usernames");
-      setNewGroupChatLoading(false)
+      setNewGroupChatLoading(false);
       return;
     }
 
     if (users.split(",").length <= 1) {
       setError("You must have more than one person in a group");
-      setNewGroupChatLoading(false)
+      setNewGroupChatLoading(false);
       return;
     }
 
@@ -52,7 +52,7 @@ function Component(props) {
         validator.isAlphanumeric(val.trim()) === false
       ) {
         setError("Username(s) invalid");
-        setNewGroupChatLoading(false)
+        setNewGroupChatLoading(false);
         return;
       }
     }
@@ -66,12 +66,12 @@ function Component(props) {
         for (const val of response.data.users) {
           addToKeychain(val, key, response.data.id);
         }
-        setNewGroupChatLoading(false)
+        setNewGroupChatLoading(false);
         props.setShowNewGroupChat(false);
         setUsers("");
       } else {
         setError(response.data.error);
-        setNewGroupChatLoading(false)
+        setNewGroupChatLoading(false);
         console.log(response);
       }
     });

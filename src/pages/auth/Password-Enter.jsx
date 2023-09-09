@@ -7,14 +7,14 @@ import validator from "validator";
 import decryptPersonalPrivateKey from "../../../functions/decrypt-personal-private-key";
 
 import { BiLockOpenAlt } from "react-icons/bi";
-import { BiLogOut } from "react-icons/bi"
-import {Avatar, AvatarGroup, AvatarIcon} from "@nextui-org/react";
+import { BiLogOut } from "react-icons/bi";
+import { Avatar, AvatarGroup, AvatarIcon } from "@nextui-org/react";
 import { Button, ButtonGroup } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
 
 function App() {
   const [loginLoading, setLoginLoading] = useState(false);
-  const [logoutLoading, setLoadoutLoading] = useState(false)
+  const [logoutLoading, setLoadoutLoading] = useState(false);
 
   const [error, setError] = useState("");
 
@@ -63,7 +63,7 @@ function App() {
   }
 
   async function logout() {
-    setLoadoutLoading(true)
+    setLoadoutLoading(true);
     await axios.post("/api/auth/logout").then((response) => {
       if (!response.data.error) {
         Cookies.remove("token");
@@ -72,7 +72,7 @@ function App() {
         window.sessionStorage.removeItem("private_key");
         window.location.href = "/login";
       } else {
-        setLoadoutLoading(false)
+        setLoadoutLoading(false);
         setError(response.data.error);
       }
     });
@@ -82,17 +82,16 @@ function App() {
     <>
       <div className="flex flex-col min-h-screen justify-center items-center">
         <div className="form-control w-full max-w-xs mt-8">
-          
-        <div className="avatar">
-        <Avatar
-          src={
-            "https://api.dicebear.com/6.x/initials/svg?seed=" +
-            username +
-            "&backgroundType=gradientLinear"
-          }
-        />
-          <p className="font-bold text-xl ml-2 mt-1">{username}</p>
-        </div>
+          <div className="avatar">
+            <Avatar
+              src={
+                "https://api.dicebear.com/6.x/initials/svg?seed=" +
+                username +
+                "&backgroundType=gradientLinear"
+              }
+            />
+            <p className="font-bold text-xl ml-2 mt-1">{username}</p>
+          </div>
 
           <Input
             type="password"

@@ -9,22 +9,22 @@ import { BiArrowBack } from "react-icons/bi";
 import { Button, ButtonGroup } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
 
-import Success from "../../../components/Success.jsx"
+import Success from "../../../components/Success.jsx";
 
 function App() {
   const [recoverLoading, setRecoverLoading] = useState(false);
 
   const [error, setError] = useState("");
-  const [showSuccess, setShowSuccess] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const [username, setUsername] = useState("");
 
   async function recover() {
-    setRecoverLoading(true)
+    setRecoverLoading(true);
 
     if (validator.isEmpty(username) === true) {
       setError("Username can not be empty");
-      setRecoverLoading(false)
+      setRecoverLoading(false);
       return;
     }
 
@@ -32,16 +32,20 @@ function App() {
     await axios.post("/api/auth/recover-send", json).then((response) => {
       if (response.data.success) {
         setShowSuccess(true);
-        setRecoverLoading(false)
+        setRecoverLoading(false);
       } else {
         setError(response.data.error);
-        setRecoverLoading(false)
+        setRecoverLoading(false);
       }
     });
   }
   return (
     <>
-    <Success showSuccess={showSuccess} setShowSuccess={setShowSuccess} text={"Check your recovery email"} />
+      <Success
+        showSuccess={showSuccess}
+        setShowSuccess={setShowSuccess}
+        text={"Check your recovery email"}
+      />
 
       <div className="flex flex-col min-h-screen justify-center items-center">
         <div className="form-control w-full max-w-xs mt-8">

@@ -14,7 +14,11 @@ function Component(props) {
 
   return (
     <>
-      <Modal isOpen={props.showError} onOpenChange={onOpenChange} hideCloseButton={true}>
+      <Modal
+        isOpen={props.showError}
+        onOpenChange={onOpenChange}
+        hideCloseButton={true}
+      >
         <ModalContent>
           {(onClose) => (
             <>

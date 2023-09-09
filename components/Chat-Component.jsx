@@ -102,7 +102,13 @@ function Component(props) {
                 startContent={<BiSolidLogOut className="opacity-50" />}
                 className="text-danger"
                 color="danger"
-                onPress={() => {props.setServerToLeave({id: props.parentID, name: props.parentName}), props.setShowLeaveServer(true)}}
+                onPress={() => {
+                  props.setServerToLeave({
+                    id: props.parentID,
+                    name: props.parentName,
+                  }),
+                    props.setShowLeaveServer(true);
+                }}
               >
                 Leave server
               </DropdownItem>

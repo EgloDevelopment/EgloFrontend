@@ -29,13 +29,13 @@ function Component(props) {
       </div>
 
       <div className="fixed right-0 mt-[0.4rem] mr-[12.5rem]">
-       {props.chatComponent}
+        {props.chatComponent}
       </div>
 
       <Button
         color="primary"
         className="fixed right-0 mt-[0.4rem] mr-3"
-        onPress={() => window.location.href = "/settings"}
+        onPress={() => (window.location.href = "/settings")}
       >
         Settings
       </Button>

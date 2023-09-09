@@ -113,7 +113,9 @@ function App() {
 
   return (
     <>
-    <p className="text-center text-xs text-default-500 mt-1">By registering you agree to the Terms of Use and Privacy Policy</p>
+      <p className="text-center text-xs text-default-500 mt-1">
+        By registering you agree to the Terms of Use and Privacy Policy
+      </p>
       <div className="flex flex-col min-h-screen justify-center items-center -mt-5">
         <div className="form-control w-full max-w-xs mt-8">
           <p className="text-2xl">Register</p>
@@ -128,7 +130,9 @@ function App() {
             errorMessage={error.includes("Username") && error}
           />
 
-          <p className="text-xs mt-2 text-default-500">Must be unique to you.</p>
+          <p className="text-xs mt-2 text-default-500">
+            Must be unique to you.
+          </p>
 
           <Input
             type="password"
