@@ -13,6 +13,7 @@ import axios from "axios";
 import { BiSolidMessageAlt } from "react-icons/bi";
 import { BiSolidUser } from "react-icons/bi";
 import { BiSolidCog } from "react-icons/bi";
+import { BiSolidLogOut } from "react-icons/bi";
 
 function Component(props) {
   async function removeFriend() {
@@ -67,9 +68,43 @@ function Component(props) {
               <DropdownItem
                 key="copy"
                 startContent={<BiSolidCog className="opacity-50" />}
-                onPress={() => window.location.href = "/group-settings?id=" + props.parentID}
+                onPress={() =>
+                  (window.location.href =
+                    "/group-settings?id=" + props.parentID)
+                }
               >
                 Settings
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </>
+      )}
+
+      {props.chatType === "server" && (
+        <>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button variant="bordered">{props.chatName}</Button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Static Actions">
+              <DropdownItem
+                key="settings"
+                startContent={<BiSolidCog className="opacity-50" />}
+                onPress={() =>
+                  (window.location.href =
+                    "/server-settings?id=" + props.parentID)
+                }
+              >
+                Settings
+              </DropdownItem>
+              <DropdownItem
+                key="leave"
+                startContent={<BiSolidLogOut className="opacity-50" />}
+                className="text-danger"
+                color="danger"
+                onPress={() => {props.setServerToLeave({id: props.parentID, name: props.parentName}), props.setShowLeaveServer(true)}}
+              >
+                Leave server
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>

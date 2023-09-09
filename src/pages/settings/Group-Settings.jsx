@@ -103,7 +103,7 @@ function App() {
   useEffect(() => {
     if (group_id) {
       checkLoggedIn();
-      getGroupSettings(group_id);
+      getGroupSettings();
     }
   }, [group_id]);
 

@@ -22,6 +22,7 @@ import NewServer from "../../components/New-Server";
 import Message from "../../components/Message";
 import UserProfile from "../../components/User-Profile";
 import ChatComponent from "../../components/Chat-Component";
+import LeaveServer from "../../components/Leave-Server";
 
 import decrypt from "../../functions/decrypt";
 import encrypt from "../../functions/encrypt";
@@ -44,12 +45,16 @@ function App() {
 
   const [showNewServer, setShowNewServer] = useState(false);
 
+  const [showLeaveServer, setShowLeaveServer] = useState(false);
+  const [serverToLeave, setServerToLeave] = useState("");
+
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userToView, setUserToView] = useState([]);
 
   const [chatName, setChatName] = useState("");
   const [chatType, setChatType] = useState("");
   const [parentID, setParentID] = useState("");
+  const [parentName, setParentName] = useState("");
 
   const [channelID, setChannelID] = useState("");
 
@@ -75,59 +80,54 @@ function App() {
   async function loadMessages(data) {
     console.log(data);
 
-    socketDisconnect();
-    setMessages([]);
+    if (data.friend_id || data.group_owner) {
+      clear();
+    }
 
     let chat_type = "";
+    let parent_id = "";
 
     if (data.friend_id) {
       setChatName(data.username);
+      setParentName(data.username);
       setChatType("direct");
       setChannelID(data.channel_id);
       setParentID(data.id);
+      parent_id = data.id;
       chat_type = "direct";
-    }
-
-    if (data.group_owner) {
+    } else if (data.group_owner) {
       setChatName(data.name);
+      setParentName(data.name);
       setChatType("group");
       setChannelID(data.channel_id);
       setParentID(data.id);
+      parent_id = data.id;
       chat_type = "group";
-    }
-
-    if (data.server_owner) {
+    } else {
       setChatName(data.name);
       setChatType("server");
-      setChannelID("");
-      setParentID(data.id);
+      setChannelID(data.channel_id);
       chat_type = "server";
+      parent_id = parentID;
     }
 
-    window.sessionStorage.setItem("current_key", await getPrivateKey(data.id));
+    window.sessionStorage.setItem(
+      "current_key",
+      await getPrivateKey(parent_id)
+    );
 
-    if (chat_type === "direct" || chat_type === "group") {
-      const json = { channel_id: data.channel_id };
+    const json = { channel_id: data.channel_id };
 
-      await axios.post("/api/messages/get?limit=50", json).then((response) => {
-        for (const val of response.data) {
-          decrypt(val.content).then((result) => {
-            val.content = result;
-          });
-        }
-        setMessages(response.data);
-        socketInitializer(data.channel_id);
-        scrollToBottom();
-      });
-    }
-
-    if (chat_type === "server") {
-      const json = { server_id: data.id };
-
-      await axios.post("/api/servers/get-channels", json).then((response) => {
-        console.log(response);
-      });
-    }
+    await axios.post("/api/messages/get?limit=50", json).then((response) => {
+      for (const val of response.data) {
+        decrypt(val.content).then((result) => {
+          val.content = result;
+        });
+      }
+      setMessages(response.data);
+      socketInitializer(data.channel_id);
+      scrollToBottom();
+    });
   }
 
   async function toggleSidebarState() {
@@ -234,10 +234,12 @@ function App() {
   async function clear() {
     socketDisconnect();
     setMessages([]);
+    window.sessionStorage.removeItem("current_key");
     setChannelID("");
     setChatName("");
     setChatType("");
     setParentID("");
+    setParentName("");
   }
 
   return (
@@ -253,6 +255,13 @@ function App() {
         userToView={userToView}
       />
 
+      <LeaveServer
+        showLeaveServer={showLeaveServer}
+        setShowLeaveServer={setShowLeaveServer}
+        serverToLeave={serverToLeave}
+        setServerToLeave={setServerToLeave}
+      />
+
       <Navbar
         setShowAddFriend={setShowAddFriend}
         setShowNewGroupChat={setShowNewGroupChat}
@@ -262,10 +271,13 @@ function App() {
         chatComponent={
           <ChatComponent
             chatType={chatType}
-            chatName={chatName}
+            chatName={parentName}
             loadProfile={loadProfile}
             parentID={parentID}
+            parentName={parentName}
             clear={clear}
+            setShowLeaveServer={setShowLeaveServer}
+            setServerToLeave={setServerToLeave}
           />
         }
       />
@@ -285,7 +297,19 @@ function App() {
         setShowNewServer={setShowNewServer}
       />
 
-      <Sidebar loadMessages={loadMessages} state={sidebarState} />
+      <Sidebar
+        loadMessages={loadMessages}
+        state={sidebarState}
+        parentName={parentName}
+        clear={clear}
+        setParentID={setParentID}
+        setParentName={setParentName}
+        setChatType={setChatType}
+
+        setShowAddFriend={setShowAddFriend}
+        setShowNewServer={setShowNewServer}
+        setShowNewGroupChat={setShowNewGroupChat}
+      />
 
       <div className="mt-32 lg:ml-72 mb-20">
         {messages.map((col) => (
@@ -305,7 +329,11 @@ function App() {
         <>
           <Input
             type="message"
-            label={chatName !== "" ? "Send a message to " + chatName : " "}
+            label={
+              message !== ""
+                ? message.length + "/5000"
+                : "Send a message to " + chatName
+            }
             variant="bordered"
             radius="none"
             className="fixed bg-background z-30 bottom-0 left-0 lg:pl-72"

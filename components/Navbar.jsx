@@ -51,28 +51,28 @@ function Component(props) {
         </DropdownTrigger>
         <DropdownMenu aria-label="Static Actions">
           <DropdownItem
-            key="new"
+            key="add"
             startContent={<BiSolidUser className="opacity-50" />}
             onPress={() => props.setShowAddFriend(true)}
           >
             Add friend
           </DropdownItem>
           <DropdownItem
-            key="edit"
+            key="new"
             startContent={<BiSolidServer className="opacity-50" />}
             onPress={() => props.setShowNewServer(true)}
           >
             New server
           </DropdownItem>
           <DropdownItem
-            key="copy"
+            key="create"
             startContent={<BiSolidGroup className="opacity-50" />}
             onPress={() => props.setShowNewGroupChat(true)}
           >
             Create group chat
           </DropdownItem>
           <DropdownItem
-            key="delete"
+            key="logout"
             startContent={<BiSolidLogOut className="opacity-50" />}
             className="text-danger"
             color="danger"

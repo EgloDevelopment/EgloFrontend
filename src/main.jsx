@@ -10,7 +10,9 @@ import "./main.css";
 
 
 import Home from "./pages/Home.jsx"
+
 import UserSettings from "./pages/settings/User-Settings.jsx"
+import ServerSettings from "./pages/settings/Server-Settings.jsx"
 
 import Login from "./pages/auth/Login.jsx"
 import PasswordEnter from "./pages/auth/Password-Enter.jsx"
@@ -31,6 +33,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/settings" element={<UserSettings />} />
 
         <Route path="/group-settings" element={<GroupSettings />} />
+
+        <Route path="/server-settings" element={<ServerSettings />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/password-enter" element={<PasswordEnter />} />
