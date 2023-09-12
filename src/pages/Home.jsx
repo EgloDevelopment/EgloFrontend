@@ -6,10 +6,6 @@ import Cookies from "js-cookie";
 
 import { Button, ButtonGroup, toggle } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
-import { Code } from "@nextui-org/react";
-import { Textarea } from "@nextui-org/react";
-
-import { BiUpload } from "react-icons/bi";
 
 import Error from "../../components/Error";
 
