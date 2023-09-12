@@ -25,25 +25,27 @@ import FourOhFour from "./pages/404.jsx";
 import FiveHundred from "./pages/500.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-    <NextUIProvider>
-      <Routes>
-        <Route index element={<Home />} />
-        <Route path="/settings" element={<UserSettings />} />
+  <React.StrictMode>
+    <BrowserRouter>
+      <NextUIProvider>
+        <Routes>
+          <Route index element={<Home />} />
+          <Route path="/settings" element={<UserSettings />} />
 
-        <Route path="/group-settings" element={<GroupSettings />} />
+          <Route path="/group-settings" element={<GroupSettings />} />
 
-        <Route path="/server-settings" element={<ServerSettings />} />
+          <Route path="/server-settings" element={<ServerSettings />} />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/password-enter" element={<PasswordEnter />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/recover-send" element={<RecoverSend />} />
-        <Route path="/recover-handle" element={<RecoverHandle />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/password-enter" element={<PasswordEnter />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/recover-send" element={<RecoverSend />} />
+          <Route path="/recover-handle" element={<RecoverHandle />} />
 
-        <Route path="*" element={<FourOhFour />} />
-        <Route path="/500" element={<FiveHundred />} />
-      </Routes>
-    </NextUIProvider>
-  </BrowserRouter>
+          <Route path="*" element={<FourOhFour />} />
+          <Route path="/500" element={<FiveHundred />} />
+        </Routes>
+      </NextUIProvider>
+    </BrowserRouter>
+  </React.StrictMode>
 );

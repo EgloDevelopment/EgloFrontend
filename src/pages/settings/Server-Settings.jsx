@@ -186,7 +186,7 @@ function App() {
         <p className="text-xs text-default-400">{serverID}</p>
       </div>
 
-      <div className="mt-10 ml-10 form-control w-full max-w-xs">
+      <div className="mt-10 ml-10 mb-10 form-control w-full max-w-xs">
         <Input
           type="name"
           label="Server name"

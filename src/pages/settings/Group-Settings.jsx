@@ -7,9 +7,6 @@ import validator from "validator";
 
 import { Button, ButtonGroup } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
-import { Code } from "@nextui-org/react";
-import { Textarea } from "@nextui-org/react";
-import { Switch } from "@nextui-org/react";
 import { Avatar, AvatarGroup, AvatarIcon } from "@nextui-org/react";
 
 import UserProfile from "../../../components/User-Profile";
