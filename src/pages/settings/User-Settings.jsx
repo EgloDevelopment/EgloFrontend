@@ -12,6 +12,7 @@ import { Switch } from "@nextui-org/react";
 import { Avatar, AvatarGroup, AvatarIcon } from "@nextui-org/react";
 
 import checkLoggedIn from "../../../functions/check-logged-in";
+import changeEncryptionKey from "../../../functions/change-encryption-key";
 
 function App() {
   const [allowFriendRequests, setAllowFriendRequests] = useState(true);
@@ -21,6 +22,9 @@ function App() {
   const [darkMode, setDarkMode] = useState(
     Cookies.get("theme") === "dark" ? true : false
   );
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword1, setNewPassword1] = useState("");
+  const [newPassword2, setNewPassword2] = useState("");
 
   const [error, setError] = useState("");
 
@@ -124,6 +128,44 @@ function App() {
       });
   }
 
+  async function changePassword() {
+    if (
+      validator.isEmpty(oldPassword) === true ||
+      validator.isEmpty(newPassword1) === true ||
+      validator.isEmpty(newPassword2) === true
+    ) {
+      return;
+    }
+
+    if (newPassword1 !== newPassword2) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (validator.isStrongPassword(newPassword1) === false) {
+      setError("Password does not meet requirements");
+      return;
+    }
+
+    let new_private_key = await changeEncryptionKey(newPassword1);
+
+    const json = {
+      old_password: oldPassword,
+      new_password1: newPassword1,
+      new_password2: newPassword2,
+      new_private_key: new_private_key,
+    };
+
+    await axios.post("/api/settings/change-password", json).then((response) => {
+      if (response.data.success) {
+        window.location.href = "/password-enter";
+      } else {
+        setError(response.data.error);
+        console.log(response);
+      }
+    });
+  }
+
   return (
     <>
       <div className="z-50 w-full fixed top-0 left-0 bg-default-100 h-14">
@@ -224,6 +266,49 @@ function App() {
           >
             Dark mode
           </Switch>
+        </div>
+
+        <div className="mt-20 mb-10 form-control w-full max-w-xs">
+          <Input
+            type="password"
+            label="Current password"
+            variant="bordered"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+            className="mt-5"
+            validationState={error.includes("Incorrect") && "invalid"}
+            errorMessage={error.includes("Incorrect") && error}
+          />
+          <Input
+            type="password"
+            label="New password"
+            variant="bordered"
+            value={newPassword1}
+            onChange={(e) => setNewPassword1(e.target.value)}
+            className="mt-5"
+            validationState={error.includes("Password") && "invalid"}
+            errorMessage={error.includes("Password") && error}
+          />
+          <Input
+            type="password"
+            label="New password again"
+            variant="bordered"
+            value={newPassword2}
+            onChange={(e) => setNewPassword2(e.target.value)}
+            className="mt-5"
+            validationState={error.includes("Password") && "invalid"}
+            errorMessage={error.includes("Password") && error}
+          />
+          <p className="text-xs mt-2 text-default-500">
+            8+ Characters with Symbols, Numbers, and Capitals.
+          </p>
+          <Button
+            color="primary"
+            className="mt-5"
+            onPress={() => changePassword()}
+          >
+            Change password
+          </Button>
         </div>
       </div>
     </>

@@ -64,7 +64,6 @@ function Component(props) {
                 </Button>
                 <Button
                   color="danger"
-                  variant="light"
                   onPress={() => leaveServer()}
                 >
                   Confirm

@@ -107,6 +107,7 @@ function Component(props) {
                           })
                           props.setParentID(col.id),
                           props.setParentName(col.name),
+                          props.setServerOwner(col.server_owner),
                           props.setChatType("server");
                       }}
                       src={

@@ -59,6 +59,7 @@ function App() {
   const [chatType, setChatType] = useState("");
   const [parentID, setParentID] = useState("");
   const [parentName, setParentName] = useState("");
+  const [serverOwner, setServerOwner] = useState("")
 
   const [channelID, setChannelID] = useState("");
 
@@ -274,6 +275,7 @@ function App() {
     setChatType("");
     setParentID("");
     setParentName("");
+    setServerOwner("")
     setMessage("");
   }
 
@@ -314,6 +316,7 @@ function App() {
             setShowLeaveServer={setShowLeaveServer}
             setServerToLeave={setServerToLeave}
             setShowServerInvite={setsShowServerInvite}
+            serverOwner={serverOwner}
           />
         }
       />
@@ -358,6 +361,7 @@ function App() {
         setShowNewServer={setShowNewServer}
         setShowNewGroupChat={setShowNewGroupChat}
         socketDisconnect={socketDisconnect}
+        setServerOwner={setServerOwner}
       />
 
       <div className="mt-32 lg:ml-72 mb-20">

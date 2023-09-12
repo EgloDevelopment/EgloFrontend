@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Dropdown,
@@ -8,13 +8,14 @@ import {
   Button,
 } from "@nextui-org/react";
 
+import Cookies from "js-cookie";
 import axios from "axios";
 
 import { BiSolidMessageAlt } from "react-icons/bi";
 import { BiSolidUser } from "react-icons/bi";
 import { BiSolidCog } from "react-icons/bi";
 import { BiSolidLogOut } from "react-icons/bi";
-import { BiSolidEnvelope } from "react-icons/bi"
+import { BiSolidEnvelope } from "react-icons/bi";
 
 function Component(props) {
   async function removeFriend() {
@@ -88,22 +89,22 @@ function Component(props) {
               <Button variant="bordered">{props.chatName}</Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="Static Actions">
-              <DropdownItem
-                key="settings"
-                startContent={<BiSolidCog className="opacity-50" />}
-                onPress={() =>
-                  (window.location.href =
-                    "/server-settings?id=" + props.parentID)
-                }
-              >
-                Settings
-              </DropdownItem>
+              {props.serverOwner === Cookies.get("id") && (
+                <DropdownItem
+                  key="settings"
+                  startContent={<BiSolidCog className="opacity-50" />}
+                  onPress={() =>
+                    (window.location.href =
+                      "/server-settings?id=" + props.parentID)
+                  }
+                >
+                  Settings
+                </DropdownItem>
+              )}
               <DropdownItem
                 key="invite"
                 startContent={<BiSolidEnvelope className="opacity-50" />}
-                onPress={() =>
-                  props.setShowServerInvite(true)
-                }
+                onPress={() => props.setShowServerInvite(true)}
               >
                 Invite to server
               </DropdownItem>
