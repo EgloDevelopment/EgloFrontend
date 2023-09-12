@@ -19,12 +19,6 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/ackee/, ""),
         secure: true,
       },
-      "/ens": {
-        target: "http://100.115.14.60:2309/",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/ens/, ""),
-        secure: true,
-      },
     },
   },
 });
