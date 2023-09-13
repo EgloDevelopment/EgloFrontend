@@ -20,7 +20,7 @@ function App() {
   const [preferredName, setPreferredName] = useState("");
   const [recoveryEmail, setRecoveryEmail] = useState("");
   const [darkMode, setDarkMode] = useState(
-    Cookies.get("theme") === "dark" ? true : false
+    Cookies.get("theme") !== "dark" ? false : true
   );
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword1, setNewPassword1] = useState("");

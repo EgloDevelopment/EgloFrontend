@@ -1,18 +1,14 @@
 import { useState, useEffect } from "react";
-
 import { useSearchParams } from "react-router-dom";
 
 import axios from "axios";
 
-import { Button, ButtonGroup } from "@nextui-org/react";
-import { Input } from "@nextui-org/react";
-import { Code } from "@nextui-org/react";
-import { Textarea } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
 
 function App() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [message, setMessage] = useState("");
+  const [response, setResponse] = useState("");
 
   let action = searchParams.get("action");
   let id = searchParams.get("id");
@@ -32,9 +28,9 @@ function App() {
     if (action === "confirm") {
       await axios.post("/api/auth/recover-confirm", json).then((response) => {
         if (response.data.success) {
-          setMessage("Account deleted successfully");
+          setResponse("Account deleted successfully");
         } else {
-          setMessage(response.data.error);
+          setResponse(response.data.error);
         }
       });
     }
@@ -42,9 +38,9 @@ function App() {
     if (action === "cancel") {
       await axios.post("/api/auth/recover-cancel", json).then((response) => {
         if (response.data.success) {
-          setMessage("Account deletion cancelled");
+          setResponse("Account deletion cancelled");
         } else {
-          setMessage(response.data.error);
+          setResponse(response.data.error);
         }
       });
     }
@@ -53,7 +49,7 @@ function App() {
   return (
     <>
       <div className="flex flex-col min-h-screen justify-center items-center">
-        {message}
+        {response !== "" ? response : <Spinner />}
       </div>
     </>
   );
