@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-import {Spinner} from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
 
 //import checkLoggedIn from "../../functions/check-logged-in";
 import addToKeychain from "../../functions/add-to-keychain";
@@ -30,7 +30,13 @@ function App() {
   }
 
   useEffect(() => {
-    if (id && code && Cookies.get("id") && Cookies.get("token") && Cookies.get("username")) {
+    if (
+      id &&
+      code &&
+      Cookies.get("id") &&
+      Cookies.get("token") &&
+      Cookies.get("username")
+    ) {
       //checkLoggedIn();
       joinServer();
     }
@@ -39,11 +45,7 @@ function App() {
   return (
     <>
       <div className="flex flex-col min-h-screen justify-center items-center">
-        {response !== "" ? (
-          response
-        ) : (
-          <Spinner />
-        )}
+        {response !== "" ? response : <Spinner />}
       </div>
     </>
   );
