@@ -21,6 +21,8 @@ import RecoverHandle from "./pages/auth/Recover-Handle.jsx";
 
 import GroupSettings from "./pages/settings/Group-Settings.jsx";
 
+import ServerInvite from "./pages/Server-Invite.jsx"
+
 import FourOhFour from "./pages/404.jsx";
 import FiveHundred from "./pages/500.jsx";
 
@@ -35,6 +37,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="/group-settings" element={<GroupSettings />} />
 
           <Route path="/server-settings" element={<ServerSettings />} />
+
+          <Route path="/server-invite" element={<ServerInvite />} />
 
           <Route path="/login" element={<Login />} />
           <Route path="/password-enter" element={<PasswordEnter />} />

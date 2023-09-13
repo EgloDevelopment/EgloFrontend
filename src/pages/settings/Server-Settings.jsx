@@ -37,6 +37,8 @@ function App() {
   const [users, setUsers] = useState([]);
   const [channels, setChannels] = useState([]);
 
+  const [allowNewUsers, setAllowNewUsers] = useState(true);
+
   async function getServerSettings() {
     const json = { server_id: server_id };
 
@@ -52,7 +54,24 @@ function App() {
         setUsers(response.data.users);
         setChannels(response.data.channels);
         setServerOwner(response.data.server_owner);
+        setAllowNewUsers(response.data.allow_new_users);
       } else {
+        console.log(response);
+      }
+    });
+  }
+
+  async function changeAllowNewUsers() {
+    const json = { server_id: serverID };
+
+    setAllowNewUsers(!allowNewUsers);
+
+    await axios.post("/api/servers/allow-new-users", json).then((response) => {
+      if (!response.data.error) {
+        setSuccess("Changed new users setting");
+        getServerSettings();
+      } else {
+        setError(response.data.error);
         console.log(response);
       }
     });
@@ -219,6 +238,18 @@ function App() {
               </>
             ))}
           </div>
+        </div>
+
+        <div className="mt-20">
+          <p className="font-bold text-lg">Security:</p>
+          <Switch
+            isSelected={allowNewUsers}
+            onChange={() => changeAllowNewUsers(event.target.checked)}
+            size="sm"
+            className="mt-5 ml-3"
+          >
+            Allow new users
+          </Switch>
         </div>
 
         <div className="mt-20">
