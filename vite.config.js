@@ -1,14 +1,27 @@
+import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import path from "path";
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [sveltekit()],
+
+  server: {
+    fs: {
+      strict: false,
+    },
+  },
+
+  resolve: {
+    alias: {
+      "@functions": path.resolve(__dirname, "functions"),
+    },
+  },
+
   server: {
     proxy: {
       "/api": {
-        target: "https://backend.eglo.pw",
-        //target: "https://dev-main-backend.eglo.pw",
+        //target: "https://backend.eglo.pw",
+        target: "http://localhost:5000",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
         secure: true,
@@ -17,6 +30,12 @@ export default defineConfig({
         target: "https://ackee.eglo.pw",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/ackee/, ""),
+        secure: true,
+      },
+      "/ens": {
+        target: "http://100.115.14.60:2309/",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ens/, ""),
         secure: true,
       },
     },
