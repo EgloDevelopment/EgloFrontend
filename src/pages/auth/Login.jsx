@@ -41,7 +41,7 @@ function Page() {
           sameSite: "strict",
         });
 
-        Cookies.set("username", username, {
+        Cookies.set("username", username.toLowerCase(), {
           expires: 180,
           sameSite: "strict",
         });

@@ -1,4 +1,4 @@
-import { sidebarState } from "../states.jsx";
+import { sidebarState, chatData } from "../states.jsx";
 import { useAtom } from "jotai";
 
 import { useState, useEffect } from "react";
@@ -10,6 +10,8 @@ import { Avatar, AvatarGroup, AvatarIcon } from "@nextui-org/react";
 
 function Component(props) {
   const [showSidebar, setShowSidebar] = useAtom(sidebarState);
+
+  const [currentChatData, setCurrentChatData] = useAtom(chatData)
 
   const [friends, setFriends] = useState([]);
 
@@ -36,7 +38,7 @@ function Component(props) {
               <>
                 <div
                   className="flex text-left transition hover:bg-content2 focus:bg-content2 ml-2 mr-2 rounded-lg cursor-pointer text-md mt-1"
-                  //onClick={() => props.loadMessages(col)}
+                  onClick={() => setCurrentChatData(col)}
                 >
                   <div className="mt-2 ml-2">
                     <Avatar

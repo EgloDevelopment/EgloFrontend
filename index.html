@@ -1,10 +1,36 @@
 <!doctype html>
 <html lang="en" class="dark">
   <head>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
     <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+
     <link rel="icon" type="image/svg+xml" href="/eglo-logo.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
     <title>Eglo Cloud</title>
+
+    <script
+      async
+      src="/public/ackee-tracker.min.js"
+      data-ackee-server="/ackee"
+      data-ackee-domain-id="1f388141-4b13-4633-b032-9a1bac0dc0e1"
+      data-ackee-opts='{ "ignoreLocalhost": false, "detailed": true }'
+      type="module"
+    ></script>
+
+    <script>
+      const themeCookie = document.cookie
+        .split("; ")
+        .find((cookie) => cookie.startsWith("theme="));
+
+      if (themeCookie && themeCookie.split("=")[1] === "light") {
+        document.documentElement.classList.remove("dark");
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

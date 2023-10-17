@@ -12,6 +12,7 @@ import {
   Button,
 } from "@nextui-org/react";
 
+import { BiSolidNavigation } from "react-icons/bi";
 import { BiSolidUser } from "react-icons/bi";
 import { BiSolidServer } from "react-icons/bi";
 import { BiSolidGroup } from "react-icons/bi";
@@ -30,88 +31,97 @@ function Component(props) {
   const [showLogoutModal, setShowLogoutModal] = useAtom(showLogout);
   return (
     <div className="z-50 w-full fixed top-0 left-0 bg-default-100 h-14">
-      <div className="lg:hidden">
-        <Button
-          variant="light"
-          isIconOnly
-          className="fixed left-0 mt-[0.4rem] ml-3"
-          onPress={() => setShowSidebar(!showSidebar)}
-        >
-          <BiMenuAltLeft />
-        </Button>
-      </div>
-
-      <div className="fixed right-0 mt-[0.4rem] mr-[12.5rem]">
-        {props.chatComponent}
-      </div>
-
-      <Button
-        color="primary"
-        className="fixed right-0 mt-[0.4rem] mr-3"
-        onPress={() => (window.location.href = "/settings")}
-      >
-        Settings
-      </Button>
-
-      <Dropdown>
-        <DropdownTrigger>
+      {props.topInteraction ? (
+        props.topInteraction
+      ) : (
+        <div className="lg:hidden">
           <Button
-            variant="bordered"
-            className="fixed right-0 mt-[0.4rem] mr-[6.5rem]"
+            variant="light"
+            isIconOnly
+            className="fixed left-0 mt-[0.4rem] ml-3"
+            onPress={() => setShowSidebar(!showSidebar)}
           >
-            Options
+            <BiMenuAltLeft />
           </Button>
-        </DropdownTrigger>
+        </div>
+      )}
 
-        <DropdownMenu aria-label="Static Actions">
-          <DropdownSection showDivider>
-            <DropdownItem
-              key="add"
-              startContent={<BiSolidUser className="opacity-50" />}
-              onPress={() => setShowAddFriendModal(true)}
+      {props.showOptions !== false && (
+        <Dropdown>
+          <DropdownTrigger>
+            <Button
+              variant="bordered"
+              className="fixed right-0 mt-[0.4rem] mr-3"
             >
-              Add friend
-            </DropdownItem>
-            <DropdownItem
-              key="new"
-              startContent={<BiSolidServer className="opacity-50" />}
-              onPress={() => props.setShowNewServer(true)}
-            >
-              New server
-            </DropdownItem>
-            <DropdownItem
-              key="create"
-              startContent={<BiSolidGroup className="opacity-50" />}
-              onPress={() => props.setShowNewGroupChat(true)}
-            >
-              Create group chat
-            </DropdownItem>
-          </DropdownSection>
+              Options
+            </Button>
+          </DropdownTrigger>
 
-          <DropdownItem
-            key="settings"
-            startContent={
-              <Avatar
-                className="w-10 h-6"
-                src={
-                  "https://api.dicebear.com/6.x/initials/svg?seed=" +
-                  Cookies.get("username") +
-                  "&backgroundType=gradientLinear"
+          <DropdownMenu aria-label="Static Actions">
+            <DropdownSection showDivider>
+              <DropdownItem
+                key="add"
+                startContent={<BiSolidUser className="opacity-50" />}
+                onPress={() => setShowAddFriendModal(true)}
+              >
+                Add friend
+              </DropdownItem>
+              <DropdownItem
+                key="new"
+                startContent={<BiSolidServer className="opacity-50" />}
+                onPress={() => props.setShowNewServer(true)}
+              >
+                New server
+              </DropdownItem>
+              <DropdownItem
+                key="create"
+                startContent={<BiSolidGroup className="opacity-50" />}
+                onPress={() => props.setShowNewGroupChat(true)}
+              >
+                Create group chat
+              </DropdownItem>
+            </DropdownSection>
+
+            <DropdownSection showDivider>
+              <DropdownItem
+                key="settings"
+                startContent={
+                  <Avatar
+                    className="w-10 h-6"
+                    src={
+                      "https://api.dicebear.com/6.x/initials/svg?seed=" +
+                      Cookies.get("username") +
+                      "&backgroundType=gradientLinear"
+                    }
+                  />
                 }
-              />
-            }
-            endContent={
-              <Button color="danger" size="sm" isIconOnly>
-                <BiSolidLogOut onClick={() => setShowLogoutModal(true)} />
-              </Button>
-            }
-            onPress={() => redirect("/settings")}
-            description={Cookies.get("username")}
-          >
-            Settings
-          </DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
+                endContent={
+                  <Button
+                    color="danger"
+                    size="sm"
+                    onPress={() => setShowLogoutModal(true)}
+                    isIconOnly
+                  >
+                    <BiSolidLogOut />
+                  </Button>
+                }
+                onPress={() => redirect("/settings")}
+                description={Cookies.get("username")}
+              >
+                Settings
+              </DropdownItem>
+            </DropdownSection>
+            <DropdownItem
+              key="subscribe"
+              className="text-primary"
+              startContent={<BiSolidNavigation className="opacity-50" />}
+              onPress={() => redirect("/subscribe")}
+            >
+              Subscribe to Eglo+
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      )}
     </div>
   );
 }

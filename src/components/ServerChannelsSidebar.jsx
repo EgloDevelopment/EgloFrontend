@@ -29,7 +29,7 @@ function Component(props) {
             <div className="ml-16 mt-2">
               <>
                 <div
-                  className="flex text-left transition hover:bg-content2 focus:bg-content2 ml-2 mr-2 rounded-lg cursor-pointer text-md mt-1"
+                  className="flex text-left transition hover:bg-content2 focus:bg-content2 ml-2 mr-2 rounded-lg cursor-pointer text-md mt-2.5"
                   onClick={() => {
                     console.log("test");
                   }}
