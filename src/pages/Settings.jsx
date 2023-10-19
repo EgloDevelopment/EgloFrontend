@@ -7,10 +7,12 @@ import { Button, ButtonGroup } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
 import { Textarea } from "@nextui-org/react";
 import { Switch } from "@nextui-org/react";
+import { Card, CardFooter, CardHeader, Image } from "@nextui-org/react";
 
 import { BiArrowBack } from "react-icons/bi";
 import { BiSave } from "react-icons/bi";
 import { BiKey } from "react-icons/bi";
+import { BiCopy } from "react-icons/bi";
 
 import checkLoggedIn from "../functions/other/check-logged-in";
 import makePostRequest from "../functions/other/make-post-request";
@@ -37,6 +39,7 @@ function Page() {
   const [recoveryEmail, setRecoveryEmail] = useState("");
   const [acceptingFriendRequests, setAcceptingFriendRequests] = useState(true);
   const [egloNumber, setEgloNumber] = useState("");
+  const [profileURL, setProfileURL] = useState("");
   const [subscription, setSubscription] = useState("");
 
   const [oldPassword, setOldPassword] = useState("");
@@ -60,6 +63,7 @@ function Page() {
         setRecoveryEmail(response.recovery_email);
         setAcceptingFriendRequests(response.accepting_friend_requests);
         setEgloNumber(response.eglo_number);
+        setProfileURL(response.profile_shorthand);
         setSubscription(response.subscription);
       }
     });
@@ -150,6 +154,31 @@ function Page() {
             className="mt-5"
             isInvalid={error.field === "eglo_number" && true}
             errorMessage={error.field === "eglo_number" && error.message}
+            disabled
+          />
+
+          <Input
+            type="phone"
+            label="Profile URL"
+            variant="bordered"
+            endContent={
+              <Button
+                isIconOnly
+                size="sm"
+                onPress={() =>
+                  navigator.clipboard.writeText(
+                    `https://app.eglo.pw/profile/${profileURL}`
+                  )
+                }
+              >
+                <BiCopy />
+              </Button>
+            }
+            value={profileURL}
+            onChange={(e) => setProfileURL(e.target.value)}
+            className="mt-5"
+            isInvalid={error.field === "profile_url" && true}
+            errorMessage={error.field === "profile_url" && error.message}
             disabled
           />
 
@@ -259,6 +288,53 @@ function Page() {
           >
             Change password
           </Button>
+        </div>
+      </div>
+
+      <div className="mt-32 ml-5">
+        <div className="form-control w-full max-w-[25rem]">
+          <Card
+            isFooterBlurred
+            className="w-full h-[300px] col-span-12 sm:col-span-7"
+          >
+            <CardHeader className="absolute z-10 top-1 flex-col items-start">
+              <p className="text-tiny text-white/60 uppercase font-bold">
+                Eglo+
+              </p>
+            </CardHeader>
+            <Image
+              removeWrapper
+              alt="Relaxing app background"
+              className="z-0 w-full h-full object-cover"
+              src="/images/purchase-1.jpeg"
+            />
+            <CardFooter className="absolute bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
+              <div className="flex flex-grow gap-2 items-center">
+                <Image
+                  alt="Breathing app icon"
+                  className="rounded-full w-11 h-11 bg-black"
+                  src="/images/eglo-logo.png"
+                />
+                <div className="flex flex-col">
+                  <p className="text-tiny text-white/60">Upgrade now.</p>
+                  <p className="text-tiny text-white/60">
+                    Feel the difference.
+                  </p>
+                </div>
+              </div>
+              {subscription !== "free" ? (
+                <p className="text-default-400">Purchased, {subscription}</p>
+              ) : (
+                <Button
+                  radius="full"
+                  size="sm"
+                  onPress={() => redirect("/subscribe")}
+                >
+                  Upgrade
+                </Button>
+              )}
+            </CardFooter>
+          </Card>
         </div>
       </div>
 

@@ -3,6 +3,7 @@ import { useState } from "react";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings"
 import Subscribe from "./pages/Subscribe"
+import Profile from "./pages/Profile"
 
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
@@ -40,6 +41,7 @@ function Router() {
       {page === "/" && <Home />}
       {page === "/settings" && <Settings />}
       {page === "/subscribe" && <Subscribe />}
+      {page.startsWith("/profile/") && <Profile/> }
 
       {page === "/login" && <Login />}
       {page === "/register" && <Register />}
