@@ -78,12 +78,12 @@ function DisplayModal(props) {
                   variant="bordered"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="mt-5 max-w-[20rem]"
+                  className="max-w-[20rem]"
                   isInvalid={error.field === "username" && true}
                   errorMessage={error.field === "username" && error.message}
                 />
               </ModalBody>
-              <ModalFooter className="mt-7">
+              <ModalFooter className="">
                 <Button
                   color="danger"
                   variant="light"

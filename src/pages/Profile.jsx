@@ -85,7 +85,7 @@ function Page() {
         </div>
 
         <div className="mt-5">
-          {userData.logged_in === true ? (
+          {userData.last_online + 5 * 60 * 1000 > Date.now() ? (
             <p className="text-success">Online</p>
           ) : (
             <p className="text-danger">Offline</p>

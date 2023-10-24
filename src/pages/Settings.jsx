@@ -32,7 +32,7 @@ function Page() {
 
   const [error, setError] = useState([]);
 
-  const [ID, setID] = useState("");
+  const [userID, setUserID] = useState("");
   const [username, setUsername] = useState("");
   const [preferredName, setPreferredName] = useState("");
   const [aboutMe, setAboutMe] = useState("");
@@ -56,7 +56,7 @@ function Page() {
       if (response.error === true) {
         console.log(response);
       } else {
-        setID(response.id);
+        setUserID(response.id);
         setUsername(response.username);
         setPreferredName(response.preferred_name);
         setAboutMe(response.about_me);
@@ -306,7 +306,7 @@ function Page() {
               removeWrapper
               alt="Relaxing app background"
               className="z-0 w-full h-full object-cover"
-              src="/images/purchase-1.jpeg"
+              src="/images/purchase-1.png"
             />
             <CardFooter className="absolute bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
               <div className="flex flex-grow gap-2 items-center">
@@ -323,7 +323,7 @@ function Page() {
                 </div>
               </div>
               {subscription !== "free" ? (
-                <p className="text-default-400">Purchased, {subscription}</p>
+                <p className="text-default-400">{subscription.toUpperCase()}</p>
               ) : (
                 <Button
                   radius="full"
@@ -339,6 +339,10 @@ function Page() {
       </div>
 
       <div className="mt-32"></div>
+
+      <div className="bottom-0 left-0 m-5">
+        <p className="text-tiny text-default-500">{userID}</p>
+      </div>
     </>
   );
 }

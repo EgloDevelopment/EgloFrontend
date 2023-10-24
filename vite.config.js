@@ -20,6 +20,20 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/ackee/, ""),
         secure: true,
       },
+      "/rts": {
+        target: "http://100.115.14.60:41287",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/rts/, ""),
+        secure: true,
+        ws: true,
+      },
+      "/fs": {
+        target: "http://localhost:6969",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/fs/, ""),
+        secure: true,
+        ws: true,
+      },
     },
   },
 });
