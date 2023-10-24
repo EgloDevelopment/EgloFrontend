@@ -31,7 +31,7 @@ import AddFriend from "../modals/AddFriend.jsx";
 import Logout from "../modals/Logout.jsx";
 import FileUpload from "../modals/FileUpload.jsx";
 import FileDownload from "../modals/FileDownload.jsx";
-import UserProfile from "../modals/UserProfile.jsx"
+import UserProfile from "../modals/UserProfile.jsx";
 
 import News from "../modals/News.jsx";
 
@@ -96,10 +96,6 @@ function Page() {
 
     setMessagesLoading(true);
 
-    if (window.innerWidth < 1024) {
-      setShowSidebar(false);
-    }
-
     if (ws) {
       ws.send(
         JSON.stringify({
@@ -110,6 +106,10 @@ function Page() {
         })
       );
       ws.close();
+    }
+
+    if (window.innerWidth < 1024) {
+      setShowSidebar(false);
     }
 
     console.log(currentChatData);

@@ -66,22 +66,13 @@ function DisplayModal(props) {
                       "&backgroundType=gradientLinear"
                     }
                     size="sm"
+                    isBordered
+                    color={
+                      userData.last_online + 5 * 60 * 1000 > Date.now()
+                        ? "success"
+                        : "danger"
+                    }
                   />
-                  {userData.last_online + 5 * 60 * 1000 > Date.now() ? (
-                    <>
-                      <span className="relative flex h-3 w-3 z-30 mt-5 -ml-1.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-50"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500 border border-1"></span>
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="relative flex h-3 w-3 z-30 mt-5 -ml-1.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-50"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 border border-1"></span>
-                      </span>
-                    </>
-                  )}
                   <div className="ml-3">
                     {userData.preferred_name !== "" ? (
                       <>
@@ -114,17 +105,17 @@ function DisplayModal(props) {
                   variant="bordered"
                   value={userData.eglo_number}
                   className="max-w-xs"
-                  disabled
+                  readOnly
                 />
 
                 {userData.about_me !== "" && (
                   <div className="form-control w-full max-w-xs">
                     <Textarea
-                      label="About Me:"
+                      label="About Me"
                       variant="bordered"
                       labelPlacement="outside"
                       value={userData.about_me}
-                      disabled
+                      readOnly
                     />
                   </div>
                 )}

@@ -95,12 +95,12 @@ function Page() {
         {userData.about_me !== "" && (
           <div className="form-control w-full max-w-xs mt-7">
             <Textarea
-              label="About Me:"
+              label="About Me"
               variant="bordered"
               labelPlacement="outside"
               value={userData.about_me}
               className="mt-5"
-              disabled
+              readOnly
             />
           </div>
         )}

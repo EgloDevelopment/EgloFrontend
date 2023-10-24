@@ -60,23 +60,13 @@ function Component(props) {
                         col.username +
                         "&backgroundType=gradientLinear"
                       }
+                      isBordered
+                      color={
+                        col.last_online + 5 * 60 * 1000 > Date.now()
+                          ? "success"
+                          : "danger"
+                      }
                     />
-
-                    {col.last_online + 5 * 60 * 1000 > Date.now() ? (
-                      <>
-                        <span className="relative flex h-3 w-3 -mb-8 ml-6 z-30 -mt-3 ml-6">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-50"></span>
-                          <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500 border border-1"></span>
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="relative flex h-3 w-3 -mb-8 ml-6 z-30 -mt-3 ml-6">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-50"></span>
-                          <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 border border-1"></span>
-                        </span>
-                      </>
-                    )}
                   </div>
                   {col.preferred_name ? (
                     <>

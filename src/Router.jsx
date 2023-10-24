@@ -1,3 +1,6 @@
+import { chatData } from "./states.jsx";
+import { useAtom } from "jotai";
+
 import { useState, useEffect } from "react";
 
 import Home from "./pages/Home";
