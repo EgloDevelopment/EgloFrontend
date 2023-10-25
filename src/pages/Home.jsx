@@ -3,6 +3,8 @@ import {
   sidebarPage,
   chatData,
   showFileUpload,
+  showError,
+  error,
 } from "../states.jsx";
 import { useAtom } from "jotai";
 
@@ -13,7 +15,9 @@ import Cookies from "js-cookie";
 import { Button, ButtonGroup } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
 import { Spinner } from "@nextui-org/react";
+import { Textarea } from "@nextui-org/react";
 
+import { BiSend } from "react-icons/bi";
 import { BiUpload } from "react-icons/bi";
 
 import checkLoggedIn from "../functions/other/check-logged-in";
@@ -32,6 +36,8 @@ import Logout from "../modals/Logout.jsx";
 import FileUpload from "../modals/FileUpload.jsx";
 import FileDownload from "../modals/FileDownload.jsx";
 import UserProfile from "../modals/UserProfile.jsx";
+import Error from "../modals/Error.jsx";
+import Encrypted from "../modals/Encrypted.jsx"
 
 import News from "../modals/News.jsx";
 
@@ -56,6 +62,9 @@ function Page() {
   const [messageInvalid, setMessageInvalid] = useState(false);
 
   const [message, setMessage] = useState("");
+
+  const [showErrorModal, setShowErrorModal] = useAtom(showError);
+  const [errorToShow, setErrorToShow] = useAtom(error);
 
   useEffect(() => {
     checkLoggedIn();
@@ -223,71 +232,76 @@ function Page() {
       <FileUpload />
       <FileDownload />
 
+      <Error />
+      <Encrypted />
+
       <UserProfile />
 
       <News />
 
-      {messagesLoading === true && (
-        <>
-          <div className="flex flex-col min-h-screen justify-center items-center lg:pl-72">
-            <Spinner />
-          </div>
-        </>
-      )}
+      <div>
+        {messagesLoading === true && (
+          <>
+            <div className="flex flex-col min-h-screen justify-center items-center lg:pl-72">
+              <Spinner />
+            </div>
+          </>
+        )}
 
-      {currentChatData.active !== false && messagesLoading === false && (
-        <>
-          <div className="mt-32 lg:ml-72 mb-20">
-            {messages.map((col) => (
-              <>
-                <ChatMessage
-                  username={col.sender_name}
-                  message={col.content}
-                  time={col.time}
-                  showAvatar={true}
-                />
-              </>
-            ))}
-          </div>
+        {currentChatData.active !== false && messagesLoading === false && (
+          <>
+            <div className="mt-32 lg:ml-72 mb-20">
+              {messages.map((col) => (
+                <>
+                  <ChatMessage
+                    username={col.sender_name}
+                    message={col.content}
+                    time={col.time}
+                    showAvatar={true}
+                  />
+                </>
+              ))}
+            </div>
 
-          <Input
-            type="message"
-            label={
-              message !== ""
-                ? message.length + "/5000"
-                : "Send a message to " + currentChatData.label.name
-            }
-            variant="bordered"
-            radius="none"
-            className="fixed bg-background z-30 bottom-0 left-0 lg:pl-72"
-            onKeyPress={handlePress}
-            endContent={
-              <ButtonGroup>
-                <Button
-                  color="primary"
-                  variant="bordered"
-                  isIconOnly
-                  onPress={() => setShowFileUploadModal(true)}
-                >
-                  <BiUpload />
-                </Button>
-
-                <Button
-                  color="primary"
-                  variant="bordered"
-                  className="-mr-[0.65rem]"
-                  onPress={() => sendMessage()}
-                >
-                  Send
-                </Button>
-              </ButtonGroup>
-            }
-            value={message}
-            isInvalid={messageInvalid}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-        </>
-      )}
+            <Input
+              type="message"
+              label={
+                message !== ""
+                  ? message.length + "/5000"
+                  : "Send a message to " + currentChatData.label.name
+              }
+              variant="bordered"
+              radius="none"
+              className="fixed bg-background z-30 bottom-0 left-0 lg:pl-72 no-border-force"
+              onKeyPress={handlePress}
+              endContent={
+                <>
+                  <Button
+                    color="primary"
+                    variant="light"
+                    isIconOnly
+                    onPress={() => setShowFileUploadModal(true)}
+                  >
+                    <BiUpload />
+                  </Button>
+                  <Button
+                    color="primary"
+                    variant="light"
+                    className="-mr-[0.65rem]"
+                    isIconOnly
+                    onPress={() => sendMessage()}
+                  >
+                    <BiSend />
+                  </Button>
+                </>
+              }
+              value={message}
+              isInvalid={messageInvalid}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+          </>
+        )}
+      </div>
     </>
   );
 }

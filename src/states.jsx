@@ -20,6 +20,11 @@ const fileToDownload = atom([])
 const showUserProfile = atom(false)
 const userToView = atom({ active: false })
 
+const showError = atom(false)
+const error = atom("")
+
+const showEncrypted = atom(false)
+
 export {
   sidebarState,
   sidebarPage,
@@ -33,5 +38,8 @@ export {
   showFileDownload,
   fileToDownload,
   showUserProfile,
-  userToView
+  userToView,
+  showError,
+  error,
+  showEncrypted
 };

@@ -46,6 +46,11 @@ function Page() {
           sameSite: "strict",
         });
 
+        Cookies.set("theme", "dark", {
+          expires: 180,
+          sameSite: "strict",
+        });
+
         decryptPersonalPrivateKey(response.private_key, password).then(
           (result) => {
             window.sessionStorage.setItem("private_key", result);

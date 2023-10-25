@@ -1,0 +1,3 @@
+DONE: Investigate messages not syncing to server
+
+IN_PROGRESS: Research UI solutions for a more user friendly UI

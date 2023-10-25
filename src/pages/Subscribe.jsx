@@ -66,7 +66,7 @@ function Page() {
                 <AccordionItem key="2" aria-label="Servers" title="Servers">
                   <ul>
                     <li className="text-sm text-default-500">
-                      • Increase server user limit to 10,000 users
+                      • Increase server user limit to 100,000 users
                     </li>
                   </ul>
                 </AccordionItem>
@@ -84,6 +84,9 @@ function Page() {
                     </li>
                     <li className="text-sm text-default-500">
                       • Get a customizable link for your profile
+                    </li>
+                    <li className="text-sm text-default-500">
+                      • Change your Eglo Number
                     </li>
                   </ul>
                 </AccordionItem>

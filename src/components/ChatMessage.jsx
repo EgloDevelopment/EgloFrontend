@@ -55,8 +55,8 @@ function Component(props) {
             )}
           </div>
         </div>
-        <div className="chat-header mx-1">{props.username}</div>
-        <div className="chat-bubble bg-content1">
+        <div className="chat-header -ml-1.5">{props.username}</div>
+        <div className="chat-bubble bg-content1 -ml-1.5">
           {props.message.startsWith("https://app.eglo.pw/file/") ? (
             <>
               <div className="rounded-lg h-[3rem]">
@@ -81,7 +81,7 @@ function Component(props) {
             </>
           )}
         </div>
-        <div className="chat-footer opacity-50 text-xs">
+        <div className="chat-footer opacity-50 text-xs -ml-1.5">
           {new Date(props.time).toLocaleDateString("en-US", DATE_OPTIONS)}
         </div>
       </div>

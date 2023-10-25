@@ -1,4 +1,4 @@
-import { sidebarState, showAddFriend, showLogout } from "../states.jsx";
+import { sidebarState, showAddFriend, showLogout, showEncrypted } from "../states.jsx";
 import { useAtom } from "jotai";
 
 import React from "react";
@@ -11,6 +11,7 @@ import {
   DropdownSection,
   Button,
 } from "@nextui-org/react";
+import { Tooltip } from "@nextui-org/react";
 
 import { BiSolidNavigation } from "react-icons/bi";
 import { BiSolidUser } from "react-icons/bi";
@@ -18,6 +19,8 @@ import { BiSolidServer } from "react-icons/bi";
 import { BiSolidGroup } from "react-icons/bi";
 import { BiSolidLogOut } from "react-icons/bi";
 import { BiMenuAltLeft } from "react-icons/bi";
+import { BiDotsHorizontalRounded } from "react-icons/bi";
+import { BiSolidLockAlt } from "react-icons/bi";
 
 import { Avatar, AvatarGroup, AvatarIcon } from "@nextui-org/react";
 
@@ -27,8 +30,13 @@ import redirect from "../functions/routing/redirect.js";
 
 function Component(props) {
   const [showSidebar, setShowSidebar] = useAtom(sidebarState);
+
   const [showAddFriendModal, setShowAddFriendModal] = useAtom(showAddFriend);
+
   const [showLogoutModal, setShowLogoutModal] = useAtom(showLogout);
+
+  const [showEncryptedModal, setShowEncryptedModal] = useAtom(showEncrypted);
+
   return (
     <div className="z-50 w-full fixed top-0 left-0 bg-default-100 h-14">
       {props.topInteraction ? (
@@ -46,14 +54,21 @@ function Component(props) {
         </div>
       )}
 
+      <div className="fixed right-0 mt-[0.4rem] mr-16">
+        <Button isIconOnly variant="light" onPress={() => setShowEncryptedModal(true)}>
+          <BiSolidLockAlt />
+        </Button>
+      </div>
+
       {props.showOptions !== false && (
         <Dropdown>
           <DropdownTrigger>
             <Button
               variant="bordered"
+              isIconOnly
               className="fixed right-0 mt-[0.4rem] mr-3"
             >
-              Options
+              <BiDotsHorizontalRounded />
             </Button>
           </DropdownTrigger>
 

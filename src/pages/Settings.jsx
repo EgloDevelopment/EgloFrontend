@@ -72,7 +72,7 @@ function Page() {
   async function updateSettings() {
     setUpdateLoading(true);
 
-    await makePostRequest("/api/settings/update", {
+    await makePostRequest("/api/settings/update-settings", {
       preferred_name: preferredName,
       about_me: aboutMe,
       recovery_email: recoveryEmail,
@@ -154,6 +154,7 @@ function Page() {
             className="mt-5"
             isInvalid={error.field === "eglo_number" && true}
             errorMessage={error.field === "eglo_number" && error.message}
+            description="🔒︎ Eglo Basic feature"
             disabled
           />
 
@@ -179,6 +180,7 @@ function Page() {
             className="mt-5"
             isInvalid={error.field === "profile_url" && true}
             errorMessage={error.field === "profile_url" && error.message}
+            description="🔒︎ Eglo Basic feature"
             disabled
           />
 
