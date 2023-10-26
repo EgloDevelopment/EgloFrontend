@@ -25,6 +25,9 @@ const error = atom("")
 
 const showEncrypted = atom(false)
 
+const showRemoveFriend = atom(false)
+const friendToRemove = atom("")
+
 export {
   sidebarState,
   sidebarPage,
@@ -41,5 +44,7 @@ export {
   userToView,
   showError,
   error,
-  showEncrypted
+  showEncrypted,
+  showRemoveFriend,
+  friendToRemove
 };

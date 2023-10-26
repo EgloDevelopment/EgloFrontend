@@ -10,6 +10,7 @@ import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/react";
 import { Button, ButtonGroup } from "@nextui-org/react";
 
 import { BiDownload } from "react-icons/bi";
+import { BiLockAlt } from "react-icons/bi";
 
 function Component(props) {
   const [showFileDownloadModal, setShowFileDownloadModal] =
@@ -63,6 +64,7 @@ function Component(props) {
                 <Button
                   className="mt-1"
                   startContent={<BiDownload />}
+                  endContent={<BiLockAlt />}
                   onPress={() => {
                     setFile({
                       name: props.message.split("name=")[1]?.split("&")[0],

@@ -52,7 +52,7 @@ function Component(props) {
                     })
                   }
                 >
-                  <div className="mt-2 ml-2">
+                  <div className="mt-2.5 ml-2">
                     <Avatar
                       className="w-8 h-8"
                       src={

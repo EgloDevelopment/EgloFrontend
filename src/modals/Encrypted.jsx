@@ -35,7 +35,7 @@ function DisplayModal(props) {
               <ModalBody>
                 <p>
                   Your messages are triple encrypted for top-notch security with
-                  Eglo's protocol, and TLS, a trusted system in use for over a
+                  Eglo's protocol, Asymmetric and Symetric Encryption, and TLS, a trusted system in use for over a
                   decade. Eglo cannot access or decode any of your
                   communications or files. Our open-source platform invites code
                   auditing on{" "}

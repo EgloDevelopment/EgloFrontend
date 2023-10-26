@@ -5,6 +5,10 @@ import {
   showFileUpload,
   showError,
   error,
+  showUserProfile,
+  userToView,
+  showRemoveFriend,
+  friendToRemove,
 } from "../states.jsx";
 import { useAtom } from "jotai";
 
@@ -16,9 +20,19 @@ import { Button, ButtonGroup } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
 import { Spinner } from "@nextui-org/react";
 import { Textarea } from "@nextui-org/react";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  DropdownSection,
+  User,
+} from "@nextui-org/react";
 
 import { BiSend } from "react-icons/bi";
 import { BiUpload } from "react-icons/bi";
+import { BiSolidUserMinus } from "react-icons/bi";
+import { BiSolidIdCard } from "react-icons/bi";
 
 import checkLoggedIn from "../functions/other/check-logged-in";
 import makePostRequest from "../functions/other/make-post-request";
@@ -37,7 +51,8 @@ import FileUpload from "../modals/FileUpload.jsx";
 import FileDownload from "../modals/FileDownload.jsx";
 import UserProfile from "../modals/UserProfile.jsx";
 import Error from "../modals/Error.jsx";
-import Encrypted from "../modals/Encrypted.jsx"
+import Encrypted from "../modals/Encrypted.jsx";
+import RemoveFriend from "../modals/RemoveFriend.jsx";
 
 import News from "../modals/News.jsx";
 
@@ -65,6 +80,15 @@ function Page() {
 
   const [showErrorModal, setShowErrorModal] = useAtom(showError);
   const [errorToShow, setErrorToShow] = useAtom(error);
+
+  const [showUserProfileModal, setShowUserProfileModal] =
+    useAtom(showUserProfile);
+  const [userProfileToView, setUserProfileToView] = useAtom(userToView);
+
+  const [showRemoveFriendModal, setShowRemoveFriendModal] =
+    useAtom(showRemoveFriend);
+  const [friendRelationIDToRemove, setFriendRelationIDToRemove] =
+    useAtom(friendToRemove);
 
   useEffect(() => {
     checkLoggedIn();
@@ -186,6 +210,8 @@ function Page() {
 
     let encrypted_message = await encrypt(message);
 
+    setMessage("");
+
     ws.send(
       JSON.stringify({
         $websocket_data: {
@@ -204,8 +230,6 @@ function Page() {
     }).then((response) => {
       if (response.error === true) {
         console.log(response);
-      } else {
-        setMessage("");
       }
     });
   }
@@ -220,13 +244,61 @@ function Page() {
 
   return (
     <>
-      <Navbar />
+      <Navbar
+        chatItems={
+          <>
+            {currentChatData.active !== false && (
+              <Dropdown>
+                <DropdownTrigger>
+                  <User
+                    as="button"
+                    avatarProps={{
+                      src: `https://api.dicebear.com/6.x/initials/svg?seed=${currentChatData.label.name}&backgroundType=gradientLinear`,
+                      size: "sm"
+                    }}
+                    className="transition-transform"
+                    description="Direct message"
+                    name={currentChatData.label.name}
+                  />
+                </DropdownTrigger>
+
+                <DropdownMenu aria-label="Static Actions">
+                  <DropdownItem
+                    key="add"
+                    startContent={<BiSolidIdCard className="opacity-50" />}
+                    onPress={() => {
+                      setUserProfileToView(currentChatData.label.name),
+                        setShowUserProfileModal(true);
+                    }}
+                  >
+                    View profile
+                  </DropdownItem>
+                  <DropdownItem
+                    key="create"
+                    className="text-danger"
+                    startContent={<BiSolidUserMinus className="opacity-50" />}
+                    onPress={() => {
+                      setShowRemoveFriendModal(true),
+                        setFriendRelationIDToRemove(
+                          currentChatData.connection_data.id
+                        );
+                    }}
+                  >
+                    Remove friend
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            )}
+          </>
+        }
+      />
 
       <ServerListSidebar />
       {currentSidebarPage === "FriendsAndGroups" && <FriendsAndGroupsSidebar />}
       {currentSidebarPage === "ServerChannels" && <ServerChannelsSidebar />}
 
       <AddFriend />
+      <RemoveFriend />
       <Logout />
 
       <FileUpload />
