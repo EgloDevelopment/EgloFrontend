@@ -28,6 +28,20 @@ const showEncrypted = atom(false)
 const showRemoveFriend = atom(false)
 const friendToRemove = atom("")
 
+const refreshFriends = atom(false)
+const refreshGroups = atom(false)
+const refreshServers = atom(false)
+
+const showCreateGroup = atom(false)
+
+const cachedFriends = atom([])
+const cachedGroups = atom([])
+
+const showLeaveGroup = atom(false)
+const showDeleteGroup = atom(false)
+const showGroupSettings = atom(false)
+const groupID = atom({active: false})
+
 export {
   sidebarState,
   sidebarPage,
@@ -46,5 +60,15 @@ export {
   error,
   showEncrypted,
   showRemoveFriend,
-  friendToRemove
+  friendToRemove,
+  refreshFriends,
+  refreshGroups,
+  refreshServers,
+  showCreateGroup,
+  cachedFriends,
+  cachedGroups,
+  showLeaveGroup,
+  showDeleteGroup,
+  showGroupSettings,
+  groupID
 };

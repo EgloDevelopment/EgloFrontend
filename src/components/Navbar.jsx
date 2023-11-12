@@ -3,6 +3,7 @@ import {
   showAddFriend,
   showLogout,
   showEncrypted,
+  showCreateGroup
 } from "../states.jsx";
 import { useAtom } from "jotai";
 
@@ -41,6 +42,8 @@ function Component(props) {
   const [showLogoutModal, setShowLogoutModal] = useAtom(showLogout);
 
   const [showEncryptedModal, setShowEncryptedModal] = useAtom(showEncrypted);
+
+  const [showCreateGroupModal, setshowCreateGroupModal] = useAtom(showCreateGroup)
 
   return (
     <div className="z-50 w-full fixed top-0 left-0 bg-default-100 h-14">
@@ -104,7 +107,7 @@ function Component(props) {
                 <DropdownItem
                   key="create"
                   startContent={<BiSolidGroup className="opacity-50" />}
-                  onPress={() => props.setShowNewGroupChat(true)}
+                  onPress={() => setshowCreateGroupModal(true)}
                 >
                   Create group chat
                 </DropdownItem>
@@ -139,6 +142,7 @@ function Component(props) {
                   Settings
                 </DropdownItem>
               </DropdownSection>
+
               <DropdownItem
                 key="subscribe"
                 className="text-primary"

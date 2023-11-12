@@ -8,7 +8,7 @@ import {
   showUserProfile,
   userToView,
   showRemoveFriend,
-  friendToRemove,
+  friendToRemove
 } from "../states.jsx";
 import { useAtom } from "jotai";
 
@@ -31,8 +31,6 @@ import {
 
 import { BiSend } from "react-icons/bi";
 import { BiUpload } from "react-icons/bi";
-import { BiSolidUserMinus } from "react-icons/bi";
-import { BiSolidIdCard } from "react-icons/bi";
 
 import checkLoggedIn from "../functions/other/check-logged-in";
 import makePostRequest from "../functions/other/make-post-request";
@@ -53,6 +51,12 @@ import UserProfile from "../modals/UserProfile.jsx";
 import Error from "../modals/Error.jsx";
 import Encrypted from "../modals/Encrypted.jsx";
 import RemoveFriend from "../modals/RemoveFriend.jsx";
+import CreateGroup from "../modals/CreateGroup.jsx"
+import GroupSettings from "../modals/GroupSettings.jsx"
+import DeleteGroup from "../modals/DeleteGroup.jsx"
+
+import DirectMessageChatItem from "../components/chat-items/DirectMessage.jsx"
+import GroupChatItem from "../components/chat-items/Group.jsx"
 
 import News from "../modals/News.jsx";
 
@@ -81,14 +85,6 @@ function Page() {
   const [showErrorModal, setShowErrorModal] = useAtom(showError);
   const [errorToShow, setErrorToShow] = useAtom(error);
 
-  const [showUserProfileModal, setShowUserProfileModal] =
-    useAtom(showUserProfile);
-  const [userProfileToView, setUserProfileToView] = useAtom(userToView);
-
-  const [showRemoveFriendModal, setShowRemoveFriendModal] =
-    useAtom(showRemoveFriend);
-  const [friendRelationIDToRemove, setFriendRelationIDToRemove] =
-    useAtom(friendToRemove);
 
   useEffect(() => {
     checkLoggedIn();
@@ -248,46 +244,10 @@ function Page() {
         chatItems={
           <>
             {currentChatData.active !== false && (
-              <Dropdown>
-                <DropdownTrigger>
-                  <User
-                    as="button"
-                    avatarProps={{
-                      src: `https://api.dicebear.com/6.x/initials/svg?seed=${currentChatData.label.name}&backgroundType=gradientLinear`,
-                      size: "sm"
-                    }}
-                    className="transition-transform"
-                    description="Direct message"
-                    name={currentChatData.label.name}
-                  />
-                </DropdownTrigger>
-
-                <DropdownMenu aria-label="Static Actions">
-                  <DropdownItem
-                    key="add"
-                    startContent={<BiSolidIdCard className="opacity-50" />}
-                    onPress={() => {
-                      setUserProfileToView(currentChatData.label.name),
-                        setShowUserProfileModal(true);
-                    }}
-                  >
-                    View profile
-                  </DropdownItem>
-                  <DropdownItem
-                    key="create"
-                    className="text-danger"
-                    startContent={<BiSolidUserMinus className="opacity-50" />}
-                    onPress={() => {
-                      setShowRemoveFriendModal(true),
-                        setFriendRelationIDToRemove(
-                          currentChatData.connection_data.id
-                        );
-                    }}
-                  >
-                    Remove friend
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
+              <>
+              {currentChatData.connection_data.type === "direct" && (<DirectMessageChatItem />)}
+              {currentChatData.connection_data.type === "group" && (<GroupChatItem />)}
+              </>
             )}
           </>
         }
@@ -299,16 +259,19 @@ function Page() {
 
       <AddFriend />
       <RemoveFriend />
+      <CreateGroup />
+      <GroupSettings />
+      <DeleteGroup />
       <Logout />
 
       <FileUpload />
       <FileDownload />
 
       <Error />
-      <Encrypted />
 
       <UserProfile />
 
+      <Encrypted />
       <News />
 
       <div>

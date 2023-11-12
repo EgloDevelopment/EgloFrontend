@@ -1,4 +1,9 @@
-import { showFileDownload, fileToDownload, showUserProfile, userToView } from "../states.jsx";
+import {
+  showFileDownload,
+  fileToDownload,
+  showUserProfile,
+  userToView,
+} from "../states.jsx";
 import { useAtom } from "jotai";
 
 import React, { useState } from "react";
@@ -17,7 +22,8 @@ function Component(props) {
     useAtom(showFileDownload);
   const [file, setFile] = useAtom(fileToDownload);
 
-  const [showUserProfileModal, setShowUserProfileModal] = useAtom(showUserProfile);
+  const [showUserProfileModal, setShowUserProfileModal] =
+    useAtom(showUserProfile);
   const [userProfileToView, setUserProfileToView] = useAtom(userToView);
 
   const [fromMe, setFromMe] = useState(
@@ -44,6 +50,7 @@ function Component(props) {
           <div className="w-10 rounded-full">
             {props.showAvatar && (
               <Avatar
+                alt={props.username}
                 src={
                   "https://api.dicebear.com/6.x/initials/svg?seed=" +
                   props.username +
@@ -51,7 +58,10 @@ function Component(props) {
                 }
                 size="sm"
                 className="mt-1 cursor-pointer"
-                onClick={() => {setUserProfileToView(props.username), setShowUserProfileModal(true)}}
+                onClick={() => {
+                  setUserProfileToView(props.username),
+                    setShowUserProfileModal(true);
+                }}
               />
             )}
           </div>

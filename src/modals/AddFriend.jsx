@@ -1,4 +1,4 @@
-import { showAddFriend } from "../states.jsx";
+import { showAddFriend, refreshFriends } from "../states.jsx";
 import { useAtom } from "jotai";
 
 import { useState, useEffect } from "react";
@@ -34,6 +34,8 @@ function DisplayModal(props) {
 
   const [username, setUsername] = useState("");
 
+  const [refreshFriendsState, setRefreshFriendsState] = useAtom(refreshFriends);
+
   async function addFriend() {
     setAddFriendLoading(true);
 
@@ -50,8 +52,10 @@ function DisplayModal(props) {
       } else {
         addToKeychain(Cookies.get("username"), key, response.id);
         addToKeychain(username, key, response.id);
-        setUsername("");
         setShowAddFriendModal(false);
+        setUsername("");
+        setRefreshFriendsState(true)
+        setError([])
       }
     });
 

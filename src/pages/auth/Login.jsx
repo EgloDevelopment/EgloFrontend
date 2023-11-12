@@ -46,6 +46,11 @@ function Page() {
           sameSite: "strict",
         });
 
+        Cookies.set("id", response.id, {
+          expires: 180,
+          sameSite: "strict",
+        });
+
         Cookies.set("theme", "dark", {
           expires: 180,
           sameSite: "strict",

@@ -1,4 +1,4 @@
-import { showRemoveFriend, friendToRemove, chatData } from "../states.jsx";
+import { showRemoveFriend, friendToRemove, chatData, refreshFriends } from "../states.jsx";
 import { useAtom } from "jotai";
 
 import { useState, useEffect } from "react";
@@ -28,6 +28,8 @@ function DisplayModal(props) {
 
   const [error, setError] = useState([]);
 
+  const [refreshFriendsState, setRefreshFriendsState] = useAtom(refreshFriends);
+
 
   async function removeFriend() {
     setRemoveFriendLoading(true);
@@ -41,6 +43,7 @@ function DisplayModal(props) {
           message: response.data,
         });
       } else {
+        setRefreshFriendsState(true)
         setCurrentChatData({active: false})
         setShowRemoveFriendModal(false);
       }

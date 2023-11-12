@@ -2,6 +2,7 @@ import {
   sidebarState,
   sidebarPage,
   showAddFriend,
+  showCreateGroup,
   chatData,
 } from "../states.jsx";
 import { useAtom } from "jotai";
@@ -28,6 +29,8 @@ function Component(props) {
   const [currentChatData, setCurrentChatData] = useAtom(chatData);
 
   const [currentSidebarPage, setCurrentSidebarPage] = useAtom(sidebarPage);
+
+  const [showCreateGroupModal, setshowCreateGroupModal] = useAtom(showCreateGroup)
 
   useEffect(() => {}, []);
 
@@ -89,7 +92,7 @@ function Component(props) {
                 <Avatar
                   className=""
                   showFallback
-                  //onClick={() => props.setShowNewServer(true)}
+                  //onClick={() => setshowCreateGroupModal(true)}
                   fallback={<BiSolidServer className="w-6 h-6" />}
                 />
               </Tooltip>
@@ -101,7 +104,7 @@ function Component(props) {
                 <Avatar
                   className=""
                   showFallback
-                  //onClick={() => props.setShowNewGroupChat(true)}
+                  onClick={() => setshowCreateGroupModal(true)}
                   fallback={<BiSolidGroup className="w-6 h-6" />}
                 />
               </Tooltip>
